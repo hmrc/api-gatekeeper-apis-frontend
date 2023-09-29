@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.apigatekeeperapisfrontend.views.models.Crumb
 @import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
 
@@ -23,10 +22,11 @@
         siteHeader: SiteHeader,
         hmrcFooter: HmrcFooter,
         hmrcHead: HmrcHead,
+        govukBreadcrumbs : GovukBreadcrumbs,
         hmrcScripts: HmrcScripts
 )
 
-@(pageTitle: Option[String] = None, breadcrumbs: Seq[Crumb] = Seq.empty)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(pageTitle: Option[String] = None, breadcrumbs: Seq[BreadcrumbsItem] = Seq.empty)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @scriptElem = {
 @hmrcScripts()
@@ -49,7 +49,7 @@
     <div style="display: flex;
         justify-content: space-between;
         align-items: center;">
-        @include.breadcrumbs(breadcrumbs: _*)
+        @govukBreadcrumbs(Breadcrumbs(items = breadcrumbs))
         @userBanner
     </div>
 }
