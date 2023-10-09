@@ -17,16 +17,15 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmServiceMockModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.AsyncHmrcSpec
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.ApiListPage
 import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.GatekeeperRoles
@@ -42,11 +41,12 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       )
       .build()
 
-  trait Setup extends MockitoSugar with ArgumentMatchersSugar with StrideAuthorisationServiceMockModule with LdapAuthorisationServiceMockModule {
+  trait Setup extends MockitoSugar with ArgumentMatchersSugar with StrideAuthorisationServiceMockModule with LdapAuthorisationServiceMockModule with ApmServiceMockModule {
     val page = app.injector.instanceOf[ApiListPage]
     val mcc  = app.injector.instanceOf[MessagesControllerComponents]
 
-    val controller = new ApiListController(mcc, StrideAuthorisationServiceMock.aMock, LdapAuthorisationServiceMock.aMock, page)
+    val controller = new ApiListController(mcc, StrideAuthorisationServiceMock.aMock, LdapAuthorisationServiceMock.aMock, page, ApmServiceMock.aMock)
+    ApmServiceMock.returnsData()
   }
   private val fakeRequest = FakeRequest("GET", "/")
 

@@ -15,13 +15,30 @@
  *@
 
 @import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
+@import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 
 @this(layout: Layout)
 
-@()(implicit request: LoggedInRequest[_])
+@(apis: List[ApiData])(implicit request: LoggedInRequest[_])
 
     @layout(pageTitle = Some("APIs")){
       <h1 class="govuk-heading-l">
           APIs
       </h1>
-    }
+    <table class="govuk-table responsive-table" data-module="moj-sortable-table">
+        <thead class="govuk-table__head">
+            <tr role="row" class="govuk-table__row">
+                <th scope="col" class="govuk-table__header govuk-!-width-one-half" aria-sort="ascending">API</th>
+                <th scope="col" class="govuk-table__header govuk-!-width-one-half">Context</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @for(api <- apis){
+                <tr role="row" class="govuk-table__row">
+                    <td role="cell" class="govuk-table__cell" data-event-name>@{api.name}</td>
+                    <td role="cell" class="govuk-table__cell" data-event-context>@{api.context}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

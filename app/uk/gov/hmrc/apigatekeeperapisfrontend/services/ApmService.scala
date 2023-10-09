@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apigatekeeperapisfrontend.config
+package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
-import com.google.inject.AbstractModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
-import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.HandleForbiddenWithView
-import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.actions.ForbiddenHandler
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
+import uk.gov.hmrc.http.HeaderCarrier
 
-class Module extends AbstractModule {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  override def configure(): Unit = {
+class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionContext) {
 
-    bind(classOf[ForbiddenHandler]).to(classOf[HandleForbiddenWithView])
-    bind(classOf[GatekeeperConfig]).toProvider(classOf[GatekeeperConfigProvider])
-    bind(classOf[ApmConnector.Config]).toProvider(classOf[LiveApmConnectorConfigProvider])
-    bind(classOf[AppConfig]).asEagerSingleton()
+  def fetchAllApis()(implicit hc: HeaderCarrier): Future[ApiData.ApiDefinitionMap] = {
+    for {
+      sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX)
+      prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION)
+    } yield sandboxApis.concat(prodApis)
   }
 }
