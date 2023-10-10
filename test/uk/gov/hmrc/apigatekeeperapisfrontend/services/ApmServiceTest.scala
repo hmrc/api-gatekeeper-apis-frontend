@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnectorMockModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDataTestData, AsyncHmrcSpec}
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ApmServiceTest extends AsyncHmrcSpec {
 

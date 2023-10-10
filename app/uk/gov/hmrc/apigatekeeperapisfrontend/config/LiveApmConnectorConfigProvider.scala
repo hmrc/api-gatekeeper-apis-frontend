@@ -17,11 +17,12 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.config
 
 import com.google.inject.{Inject, Provider, Singleton}
+
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class LiveApmConnectorConfigProvider @Inject()(config: ServicesConfig) extends Provider[ApmConnector.Config] {
+class LiveApmConnectorConfigProvider @Inject() (config: ServicesConfig) extends Provider[ApmConnector.Config] {
 
   override def get(): ApmConnector.Config =
     ApmConnector.Config(

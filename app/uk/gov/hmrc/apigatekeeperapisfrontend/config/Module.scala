@@ -17,6 +17,7 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.config
 
 import com.google.inject.AbstractModule
+
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.HandleForbiddenWithView
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.actions.ForbiddenHandler

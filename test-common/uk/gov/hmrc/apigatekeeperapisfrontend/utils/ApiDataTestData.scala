@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.utils
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models.{ApiAccess, ApiCategory, ApiData, ApiStatus, ApiVersion, ApiVersionSource, ServiceName}
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, ApiVersionNbr}
-
 import java.time.Instant
+
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, ApiVersionNbr}
 
 trait ApiDataTestData {
   val defaultVersion = ApiVersionNbr("1.0")

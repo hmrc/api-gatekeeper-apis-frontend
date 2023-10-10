@@ -17,8 +17,10 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder

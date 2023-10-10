@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.connectors
 
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.apiplatform.modules.common.domain.models._
+
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 @Singleton
 class ApmConnector @Inject() (http: HttpClient, config: ApmConnector.Config)(implicit ec: ExecutionContext) {

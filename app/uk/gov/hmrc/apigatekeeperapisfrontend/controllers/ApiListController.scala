@@ -17,7 +17,8 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.actions.GatekeeperRoleActions
 import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService

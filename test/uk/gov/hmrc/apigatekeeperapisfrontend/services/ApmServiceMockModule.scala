@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
-import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
-
 import scala.concurrent.Future
+
+import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+
+import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 
 trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
