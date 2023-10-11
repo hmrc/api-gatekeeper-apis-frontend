@@ -21,6 +21,7 @@ import scala.concurrent.Future
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.ApiData
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 
 trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar with ApiDataTestData {
@@ -28,8 +29,8 @@ trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar wit
   trait BaseApmConnectorMock {
     def aMock: ApmConnector
 
-    def returnsData(env: Environment) = {
-      when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(anApiDataMap()))
+    def returnsData(env: Environment, data: ApiData.ApiDefinitionMap = anApiDataMap()) = {
+      when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(data))
     }
 
     def returnsNoData(env: Environment) = {

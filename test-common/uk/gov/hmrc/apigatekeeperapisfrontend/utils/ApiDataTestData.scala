@@ -26,19 +26,22 @@ trait ApiDataTestData {
   val defaultContext = ApiContext("hello")
   val defaultPublish = Instant.parse("2022-10-12T19:00:00.000Z")
 
-  def anApiDataMap(): ApiData.ApiDefinitionMap = {
+  val defaultData = ApiData(
+    serviceName = ServiceName("helloworld"),
+    serviceBaseUrl = "a.com/",
+    name = "Hello World",
+    description = "This is a test api",
+    context = defaultContext,
+    versions = Map(defaultVersion -> ApiVersion(defaultVersion, ApiStatus.STABLE, ApiAccess.PUBLIC, List(), true, None, ApiVersionSource.OAS)),
+    requiresTrust = false,
+    isTestSupport = false,
+    lastPublishedAt = Some(defaultPublish),
+    categories = List(ApiCategory.OTHER)
+  )
 
-    Map(defaultContext -> ApiData(
-      ServiceName("helloworld"),
-      "a.com/",
-      "Hello World",
-      "This is a test api",
-      defaultContext,
-      Map(defaultVersion -> ApiVersion(defaultVersion, ApiStatus.STABLE, ApiAccess.PUBLIC, List(), true, None, ApiVersionSource.OAS)),
-      false,
-      false,
-      Some(defaultPublish),
-      List(ApiCategory.OTHER)
-    ))
+  def anApiDataMap(): ApiData.ApiDefinitionMap = {
+    Map(
+      defaultContext -> defaultData
+    )
   }
 }

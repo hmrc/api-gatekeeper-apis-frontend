@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnectorMockModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDataTestData, AsyncHmrcSpec}
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class ApmServiceTest extends AsyncHmrcSpec {
@@ -47,10 +47,10 @@ class ApmServiceTest extends AsyncHmrcSpec {
     }
 
     "merge them when both are returned" in new Setup {
-      ApmConnectorMock.returnsData(Environment.SANDBOX)
-      ApmConnectorMock.returnsData(Environment.PRODUCTION)
+      ApmConnectorMock.returnsData(Environment.SANDBOX, anApiDataMap().concat(Map(ApiContext("sandbox") -> defaultData.copy(context = ApiContext("sandbox")))))
+      ApmConnectorMock.returnsData(Environment.PRODUCTION, anApiDataMap().concat(Map(ApiContext("production") -> defaultData.copy(context = ApiContext("production")))))
       val result = await(service.fetchAllApis())
-      result.size shouldBe 1
+      result.size shouldBe 3
       result.get(defaultContext) shouldBe anApiDataMap().get(defaultContext)
     }
   }
