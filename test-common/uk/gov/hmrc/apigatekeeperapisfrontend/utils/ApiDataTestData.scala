@@ -23,7 +23,7 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, ApiVers
 
 trait ApiDataTestData {
   val defaultVersion = ApiVersionNbr("1.0")
-  val defaultContext = ApiContext("hello")
+  val defaultContext = ApiContext("test/hello")
   val defaultPublish = Instant.parse("2022-10-12T19:00:00.000Z")
 
   val defaultData = ApiData(

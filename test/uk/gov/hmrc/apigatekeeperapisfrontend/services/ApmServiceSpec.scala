@@ -47,11 +47,14 @@ class ApmServiceSpec extends AsyncHmrcSpec {
     }
 
     "merge them when both are returned" in new Setup {
-      ApmConnectorMock.returnsData(Environment.SANDBOX, anApiDataMap().concat(Map(ApiContext("sandbox") -> defaultData.copy(context = ApiContext("sandbox")))))
-      ApmConnectorMock.returnsData(Environment.PRODUCTION, anApiDataMap().concat(Map(ApiContext("production") -> defaultData.copy(context = ApiContext("production")))))
+      private val contextFromSandbox: ApiContext    = ApiContext("test/ciao")
+      private val contextFromProduction: ApiContext = ApiContext("test/ola")
+      ApmConnectorMock.returnsData(Environment.SANDBOX, anApiDataMap().concat(Map(contextFromSandbox -> defaultData.copy(context = contextFromSandbox))))
+      ApmConnectorMock.returnsData(Environment.PRODUCTION, anApiDataMap().concat(Map(contextFromProduction -> defaultData.copy(context = contextFromProduction))))
+
       val result = await(service.fetchAllApis())
       result.size shouldBe 3
-      result.get(defaultContext) shouldBe anApiDataMap().get(defaultContext)
+      result.keys shouldBe Set(contextFromSandbox, contextFromProduction, defaultContext)
     }
   }
 }
