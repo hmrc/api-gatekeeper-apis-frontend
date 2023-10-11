@@ -23,7 +23,7 @@ import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDataTestData, AsyncHmrcSp
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
 
-class ApmServiceTest extends AsyncHmrcSpec {
+class ApmServiceSpec extends AsyncHmrcSpec {
 
   trait Setup extends ApmConnectorMockModule with ApiDataTestData {
     implicit val hc: HeaderCarrier = HeaderCarrier()
