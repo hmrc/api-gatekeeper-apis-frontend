@@ -24,7 +24,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
 
-class HealthEndpointIntegrationSpec
+class HealthEndpointISpec
     extends AnyWordSpec
     with Matchers
     with ScalaFutures

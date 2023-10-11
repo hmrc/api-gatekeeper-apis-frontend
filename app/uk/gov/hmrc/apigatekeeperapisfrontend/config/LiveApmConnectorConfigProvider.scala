@@ -16,19 +16,16 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.config
 
-import com.google.inject.AbstractModule
+import com.google.inject.{Inject, Provider, Singleton}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
-import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.HandleForbiddenWithView
-import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.actions.ForbiddenHandler
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class Module extends AbstractModule {
+@Singleton
+class LiveApmConnectorConfigProvider @Inject() (config: ServicesConfig) extends Provider[ApmConnector.Config] {
 
-  override def configure(): Unit = {
-
-    bind(classOf[ForbiddenHandler]).to(classOf[HandleForbiddenWithView])
-    bind(classOf[GatekeeperConfig]).toProvider(classOf[GatekeeperConfigProvider])
-    bind(classOf[ApmConnector.Config]).toProvider(classOf[LiveApmConnectorConfigProvider])
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  override def get(): ApmConnector.Config =
+    ApmConnector.Config(
+      serviceBaseUrl = config.baseUrl("api-platform-microservice")
+    )
 }

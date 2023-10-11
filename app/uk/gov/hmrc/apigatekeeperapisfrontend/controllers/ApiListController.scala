@@ -17,10 +17,11 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.actions.GatekeeperRoleActions
+import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.ApiListPage
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationService, StrideAuthorisationService}
@@ -30,12 +31,20 @@ class ApiListController @Inject() (
     mcc: MessagesControllerComponents,
     strideAuthorisationService: StrideAuthorisationService,
     val ldapAuthorisationService: LdapAuthorisationService,
-    apiListPage: ApiListPage
+    apiListPage: ApiListPage,
+    apmService: ApmService
   )(implicit override val ec: ExecutionContext
   ) extends GatekeeperBaseController(strideAuthorisationService, mcc) with GatekeeperRoleActions {
 
   val page: Action[AnyContent] = loggedInOnly() { implicit request =>
-    Future.successful(Ok(apiListPage()))
+    apmService.fetchAllApis()
+      .map(apis =>
+        apis.values
+          .toList
+          .sortBy(_.name.toLowerCase)
+      )
+      .map(nameContext => Ok(apiListPage(nameContext)))
+
   }
 
 }
