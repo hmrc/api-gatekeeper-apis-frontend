@@ -18,16 +18,17 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.connectors
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient}
+import uk.gov.hmrc.http.Authorization
 
 @Singleton
 class ApmConnector @Inject() (http: HttpClient, config: ApmConnector.Config)(implicit ec: ExecutionContext) {
 
-  def fetchAllApis(env: Environment)(implicit hc: HeaderCarrier): Future[ApiData.ApiDefinitionMap] = {
+  def fetchAllApis(env: Environment, hc: HeaderCarrier): Future[ApiData.ApiDefinitionMap] = {
+    implicit val headerCarrier: HeaderCarrier = hc.copy(authorization = Some(Authorization(config.authToken)))
     http.GET[ApiData.ApiDefinitionMap](s"${config.serviceBaseUrl}/api-definitions/all?environment=$env")
   }
 
@@ -36,6 +37,7 @@ class ApmConnector @Inject() (http: HttpClient, config: ApmConnector.Config)(imp
 object ApmConnector {
 
   case class Config(
-      serviceBaseUrl: String
+      serviceBaseUrl: String,
+      authToken: String
     )
 }

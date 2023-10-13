@@ -29,6 +29,25 @@ sbt test
 ```
 To clean compile and run all tests, use the script 'run_all_tests.sh'
 ```
+## Running Locally
+
+```
+curl -X POST --location "http://localhost:8470/test-only/token" \
+    -H "content-type: application/json" \
+    -d "{
+          \"token\": \"9682\",
+          \"principal\": \"api-gatekeeper-apis-frontend\",
+          \"permissions\": [
+            {
+              \"resourceType\": \"api-platform-microservice\",
+              \"resourceLocation\": \"api-definitions/all\",
+              \"actions\": [
+                \"READ\"
+              ]
+            }
+          ]
+        }"
+ ```
 
 ### License
 
