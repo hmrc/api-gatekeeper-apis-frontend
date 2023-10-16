@@ -40,7 +40,7 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
     .build()
 
   trait Setup {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val connector = app.injector.instanceOf[ApmConnector]
   }
@@ -53,7 +53,7 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
           .withStatus(OK)
           .withBody(Json.toJson(anApiDataMap()).toString())))
 
-      val result = await(connector.fetchAllApis(Environment.SANDBOX))
+      val result = await(connector.fetchAllApis(Environment.SANDBOX, hc))
 
       result.get(ApiContext("hello")) shouldBe anApiDataMap().get(ApiContext("hello"))
     }

@@ -26,6 +26,7 @@ class LiveApmConnectorConfigProvider @Inject() (config: ServicesConfig) extends 
 
   override def get(): ApmConnector.Config =
     ApmConnector.Config(
-      serviceBaseUrl = config.baseUrl("api-platform-microservice")
+      serviceBaseUrl = config.baseUrl("api-platform-microservice"),
+      authToken = config.getString("internal-auth.token")
     )
 }

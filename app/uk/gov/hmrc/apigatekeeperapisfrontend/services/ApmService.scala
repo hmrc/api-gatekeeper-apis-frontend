@@ -28,8 +28,8 @@ class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionCo
 
   def fetchAllApis()(implicit hc: HeaderCarrier): Future[ApiData.ApiDefinitionMap] = {
     for {
-      sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX)
-      prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION)
+      sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX,hc)
+      prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION,hc)
     } yield sandboxApis.concat(prodApis)
   }
 }
