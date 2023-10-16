@@ -30,11 +30,11 @@ trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar wit
     def aMock: ApmConnector
 
     def returnsData(env: Environment, data: ApiData.ApiDefinitionMap = anApiDataMap()) = {
-      when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(data))
+      when(aMock.fetchAllApis(eqTo(env),*)).thenReturn(Future.successful(data))
     }
 
     def returnsNoData(env: Environment) = {
-      when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(Map()))
+      when(aMock.fetchAllApis(eqTo(env),*)).thenReturn(Future.successful(Map()))
     }
   }
 
