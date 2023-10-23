@@ -35,7 +35,7 @@ class ApmServiceSpec extends AsyncHmrcSpec {
       ApmConnectorMock.returnsNoData(Environment.PRODUCTION)
       val result = await(service.fetchAllApis())
       result.size shouldBe 1
-      result.get(defaultContext) shouldBe anApiDataMap().get(defaultContext)
+      result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
 
     "use production if only production returned" in new Setup {
@@ -43,18 +43,18 @@ class ApmServiceSpec extends AsyncHmrcSpec {
       ApmConnectorMock.returnsData(Environment.PRODUCTION)
       val result = await(service.fetchAllApis())
       result.size shouldBe 1
-      result.get(defaultContext) shouldBe anApiDataMap().get(defaultContext)
+      result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
 
     "merge them when both are returned" in new Setup {
       private val contextFromSandbox: ApiContext    = ApiContext("test/ciao")
       private val contextFromProduction: ApiContext = ApiContext("test/ola")
-      ApmConnectorMock.returnsData(Environment.SANDBOX, anApiDataMap().concat(Map(contextFromSandbox -> defaultData.copy(context = contextFromSandbox))))
-      ApmConnectorMock.returnsData(Environment.PRODUCTION, anApiDataMap().concat(Map(contextFromProduction -> defaultData.copy(context = contextFromProduction))))
+      ApmConnectorMock.returnsData(Environment.SANDBOX, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromSandbox)))
+      ApmConnectorMock.returnsData(Environment.PRODUCTION, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
 
       val result = await(service.fetchAllApis())
       result.size shouldBe 3
-      result.keys shouldBe Set(contextFromSandbox, contextFromProduction, defaultContext)
+      result.map(_.context).toSet shouldBe Set(contextFromSandbox, contextFromProduction, defaultContext)
     }
   }
 }

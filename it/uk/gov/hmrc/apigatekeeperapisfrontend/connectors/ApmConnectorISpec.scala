@@ -24,7 +24,7 @@ import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, Environment}
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.http.HeaderCarrier
 
 class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with ApiDataTestData {
@@ -51,11 +51,11 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
       stubFor(WireMock.get(urlEqualTo(url))
         .willReturn(aResponse()
           .withStatus(OK)
-          .withBody(Json.toJson(anApiDataMap()).toString())))
+          .withBody(Json.toJson(List(defaultApiDefinition).map(d => d.context -> d).toMap).toString())))
 
       val result = await(connector.fetchAllApis(Environment.SANDBOX))
 
-      result.get(ApiContext("hello")) shouldBe anApiDataMap().get(ApiContext("hello"))
+      result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
   }
 }

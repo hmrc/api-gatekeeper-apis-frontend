@@ -26,7 +26,7 @@ trait ApiDataTestData {
   val defaultContext = ApiContext("test/hello")
   val defaultPublish = Instant.parse("2022-10-12T19:00:00.000Z")
 
-  val defaultData = ApiData(
+  val defaultApiDefinition = ApiDefinition(
     serviceName = ServiceName("helloworld"),
     serviceBaseUrl = "a.com/",
     name = "Hello World",
@@ -38,10 +38,4 @@ trait ApiDataTestData {
     lastPublishedAt = Some(defaultPublish),
     categories = List(ApiCategory.OTHER)
   )
-
-  def anApiDataMap(): ApiData.ApiDefinitionMap = {
-    Map(
-      defaultContext -> defaultData
-    )
-  }
 }

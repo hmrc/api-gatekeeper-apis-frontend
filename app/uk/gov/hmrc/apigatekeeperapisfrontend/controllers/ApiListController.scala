@@ -38,11 +38,7 @@ class ApiListController @Inject() (
 
   val page: Action[AnyContent] = loggedInOnly() { implicit request =>
     apmService.fetchAllApis()
-      .map(apis =>
-        apis.values
-          .toList
-          .sortBy(_.name.toLowerCase)
-      )
+      .map(_.sortBy(_.name.toLowerCase))
       .map(nameContext => Ok(apiListPage(nameContext)))
 
   }

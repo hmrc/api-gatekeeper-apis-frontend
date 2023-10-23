@@ -27,10 +27,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 @Singleton
 class ApmConnector @Inject() (http: HttpClient, config: ApmConnector.Config)(implicit ec: ExecutionContext) {
 
-  def fetchAllApis(env: Environment)(implicit hc: HeaderCarrier): Future[ApiData.ApiDefinitionMap] = {
-    http.GET[ApiData.ApiDefinitionMap](s"${config.serviceBaseUrl}/api-definitions/all?environment=$env")
+  def fetchAllApis(env: Environment)(implicit hc: HeaderCarrier): Future[List[ApiDefinition]] = {
+    http.GET[MappedApiDefinitions](s"${config.serviceBaseUrl}/api-definitions/all?environment=$env")
+      .map(_.wrapped.values.toList)
   }
-
 }
 
 object ApmConnector {

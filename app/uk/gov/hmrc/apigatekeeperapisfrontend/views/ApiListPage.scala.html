@@ -19,7 +19,7 @@
 
 @this(layout: Layout, govukTable: GovukTable)
 
-@(apis: List[ApiData])(implicit request: LoggedInRequest[_])
+@(apis: List[ApiDefinition])(implicit request: LoggedInRequest[_])
 
 @layout(pageTitle = Some("APIs")) {
     @govukTable(Table(
