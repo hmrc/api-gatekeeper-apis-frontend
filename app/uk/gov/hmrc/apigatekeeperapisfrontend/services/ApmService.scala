@@ -26,10 +26,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionContext) {
 
-  def fetchAllApis()(implicit hc: HeaderCarrier): Future[ApiData.ApiDefinitionMap] = {
+  def fetchAllApis()(implicit hc: HeaderCarrier): Future[List[ApiDefinition]] = {
     for {
       sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX)
       prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION)
-    } yield sandboxApis.concat(prodApis)
+    } yield (sandboxApis ++ prodApis).distinct
   }
 }

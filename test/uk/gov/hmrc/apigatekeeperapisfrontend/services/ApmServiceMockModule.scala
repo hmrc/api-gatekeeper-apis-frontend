@@ -28,7 +28,7 @@ trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
     def aMock: ApmService
 
     def returnsData() = {
-      when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(anApiDataMap()))
+      when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(List(defaultApiDefinition)))
     }
 
   }
