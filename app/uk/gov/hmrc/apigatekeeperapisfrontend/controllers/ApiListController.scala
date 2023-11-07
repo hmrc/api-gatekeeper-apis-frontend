@@ -22,7 +22,11 @@ import scala.concurrent.ExecutionContext
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.actions.GatekeeperRoleActions
 import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService
+import uk.gov.hmrc.apigatekeeperapisfrontend.utils.CsvHelper.ColumnDefinition
+import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDefinitionView, CsvHelper}
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.ApiListPage
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationService, StrideAuthorisationService}
 
@@ -38,9 +42,72 @@ class ApiListController @Inject() (
 
   val page: Action[AnyContent] = loggedInOnly() { implicit request =>
     apmService.fetchAllApis()
+      .map(_.distinct)
       .map(_.sortBy(_.name.toLowerCase))
       .map(nameContext => Ok(apiListPage(nameContext)))
 
+  }
+
+  private def isTrial(apiVersion: ApiVersion): Boolean = {
+    apiVersion.access match {
+      case ApiAccess.Private(true) => true
+      case _                       => false
+    }
+  }
+
+  val csv: Action[AnyContent] = loggedInOnly() { implicit request =>
+    val columnDefinitions: Seq[ColumnDefinition[ApiDefinitionView]] = Seq(
+      ColumnDefinition("name", vm => vm.name),
+      ColumnDefinition("serviceName", vm => vm.serviceName.value),
+      ColumnDefinition("context", vm => vm.context.value),
+      ColumnDefinition("version", vm => vm.versionNbr.value),
+      ColumnDefinition("source", vm => vm.versionSource.toString),
+      ColumnDefinition("status", vm => vm.status.toString),
+      ColumnDefinition("access", vm => vm.access.displayText),
+      ColumnDefinition("isTrial", vm => vm.isTrial.toString),
+      ColumnDefinition("environment", vm => vm.environment.displayText),
+      ColumnDefinition("requiresTrust", vm => vm.requiresTrust.toString),
+      ColumnDefinition("lastPublishedAt", vm => vm.lastPublishedAt.map(_.toString).getOrElse(""))
+    )
+
+    apmService
+      .fetchAllApis()
+      .map(container =>
+        container.sandbox.flatMap(apiDef =>
+          apiDef.versionsAsList.map(v =>
+            ApiDefinitionView(
+              apiDef.name,
+              apiDef.serviceName,
+              apiDef.context,
+              v.versionNbr,
+              v.versionSource,
+              v.status,
+              v.access.accessType,
+              apiDef.requiresTrust,
+              isTrial(v),
+              Environment.SANDBOX,
+              apiDef.lastPublishedAt
+            )
+          )
+        ) ++ container.production.flatMap(apiDef =>
+          apiDef.versionsAsList.map(v =>
+            ApiDefinitionView(
+              apiDef.name,
+              apiDef.serviceName,
+              apiDef.context,
+              v.versionNbr,
+              v.versionSource,
+              v.status,
+              v.access.accessType,
+              apiDef.requiresTrust,
+              isTrial(v),
+              Environment.PRODUCTION,
+              apiDef.lastPublishedAt
+            )
+          )
+        )
+      )
+      .map(views => Ok(CsvHelper.toCsvString(columnDefinitions, views)).as("text/csv"))
   }
 
 }

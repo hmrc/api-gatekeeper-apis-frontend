@@ -20,16 +20,16 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apigatekeeperapisfrontend.models.EnvironmentDefinitions
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.http.HeaderCarrier
 
 class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionContext) {
 
-  def fetchAllApis()(implicit hc: HeaderCarrier): Future[List[ApiDefinition]] = {
+  def fetchAllApis()(implicit hc: HeaderCarrier): Future[EnvironmentDefinitions] = {
     for {
       sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX)
       prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION)
-    } yield (sandboxApis ++ prodApis).distinct
+    } yield EnvironmentDefinitions(sandboxApis, prodApis)
   }
 }

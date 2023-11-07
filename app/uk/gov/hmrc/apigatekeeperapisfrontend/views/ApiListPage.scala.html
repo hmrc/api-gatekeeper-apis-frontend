@@ -16,12 +16,14 @@
 
 @import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 @import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
+@import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
 
 @this(layout: Layout, govukTable: GovukTable)
 
 @(apis: List[ApiDefinition])(implicit request: LoggedInRequest[_])
 
 @layout(pageTitle = Some("APIs")) {
+    <a href="@routes.ApiListController.csv" class="govuk-button" download>Download CSV</a>
     @govukTable(Table(
         rows = apis.map(data => Seq(TableRow(content = Text(data.name)), TableRow(content = Text(data.context.value)))),
         head = Some(Seq(HeadCell(content = Text("API"), classes = "govuk-!-width-one-half"), HeadCell(content = Text("Context"), classes = "govuk-!-width-one-half"))),

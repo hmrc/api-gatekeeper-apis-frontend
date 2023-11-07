@@ -33,7 +33,7 @@ class ApmServiceSpec extends AsyncHmrcSpec {
     "use sandbox if only sandbox returned" in new Setup {
       ApmConnectorMock.returnsData(Environment.SANDBOX)
       ApmConnectorMock.returnsNoData(Environment.PRODUCTION)
-      val result = await(service.fetchAllApis())
+      val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 1
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
@@ -41,7 +41,7 @@ class ApmServiceSpec extends AsyncHmrcSpec {
     "use production if only production returned" in new Setup {
       ApmConnectorMock.returnsNoData(Environment.SANDBOX)
       ApmConnectorMock.returnsData(Environment.PRODUCTION)
-      val result = await(service.fetchAllApis())
+      val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 1
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
@@ -52,7 +52,7 @@ class ApmServiceSpec extends AsyncHmrcSpec {
       ApmConnectorMock.returnsData(Environment.SANDBOX, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromSandbox)))
       ApmConnectorMock.returnsData(Environment.PRODUCTION, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
 
-      val result = await(service.fetchAllApis())
+      val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 3
       result.map(_.context).toSet shouldBe Set(contextFromSandbox, contextFromProduction, defaultContext)
     }
