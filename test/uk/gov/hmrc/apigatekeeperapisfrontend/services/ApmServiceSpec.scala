@@ -17,11 +17,12 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnectorMockModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDataTestData, AsyncHmrcSpec}
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
+
+import java.time.Instant
 
 class ApmServiceSpec extends AsyncHmrcSpec {
 
@@ -49,7 +50,7 @@ class ApmServiceSpec extends AsyncHmrcSpec {
     "merge them when both are returned" in new Setup {
       private val contextFromSandbox: ApiContext    = ApiContext("test/ciao")
       private val contextFromProduction: ApiContext = ApiContext("test/ola")
-      ApmConnectorMock.returnsData(Environment.SANDBOX, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromSandbox)))
+      ApmConnectorMock.returnsData(Environment.SANDBOX, List(defaultApiDefinition.copy(lastPublishedAt = Some(Instant.now)), defaultApiDefinition.copy(context = contextFromSandbox)))
       ApmConnectorMock.returnsData(Environment.PRODUCTION, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
 
       val result = await(service.fetchAllApis()).distinct

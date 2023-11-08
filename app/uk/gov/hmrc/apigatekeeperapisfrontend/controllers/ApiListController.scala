@@ -57,17 +57,17 @@ class ApiListController @Inject() (
 
   val csv: Action[AnyContent] = loggedInOnly() { implicit request =>
     val columnDefinitions: Seq[ColumnDefinition[ApiDefinitionView]] = Seq(
-      ColumnDefinition("name", vm => vm.name),
-      ColumnDefinition("serviceName", vm => vm.serviceName.value),
-      ColumnDefinition("context", vm => vm.context.value),
-      ColumnDefinition("version", vm => vm.versionNbr.value),
-      ColumnDefinition("source", vm => vm.versionSource.toString),
-      ColumnDefinition("status", vm => vm.status.toString),
-      ColumnDefinition("access", vm => vm.access.displayText),
-      ColumnDefinition("isTrial", vm => vm.isTrial.toString),
-      ColumnDefinition("environment", vm => vm.environment.displayText),
-      ColumnDefinition("requiresTrust", vm => vm.requiresTrust.toString),
-      ColumnDefinition("lastPublishedAt", vm => vm.lastPublishedAt.map(_.toString).getOrElse(""))
+      ColumnDefinition("name", defView => defView.name),
+      ColumnDefinition("serviceName", defView => defView.serviceName.value),
+      ColumnDefinition("context", defView => defView.context.value),
+      ColumnDefinition("version", defView => defView.versionNbr.value),
+      ColumnDefinition("source", defView => defView.versionSource.toString),
+      ColumnDefinition("status", defView => defView.status.toString),
+      ColumnDefinition("access", defView => defView.access.displayText),
+      ColumnDefinition("isTrial", defView => defView.isTrial.toString),
+      ColumnDefinition("environment", defView => defView.environment.displayText),
+      ColumnDefinition("requiresTrust", defView => defView.requiresTrust.toString),
+      ColumnDefinition("lastPublishedAt", defView => defView.lastPublishedAt.map(_.toString).getOrElse(""))
     )
 
     apmService

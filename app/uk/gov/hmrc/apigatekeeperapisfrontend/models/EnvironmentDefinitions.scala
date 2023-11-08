@@ -19,5 +19,5 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.models
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models.ApiDefinition
 
 case class EnvironmentDefinitions(sandbox: List[ApiDefinition], production: List[ApiDefinition]) {
-  lazy val distinct: List[ApiDefinition] = (sandbox ++ production).distinct
+  lazy val distinct: List[ApiDefinition] = (sandbox ++ production).distinctBy(_.context)
 }
