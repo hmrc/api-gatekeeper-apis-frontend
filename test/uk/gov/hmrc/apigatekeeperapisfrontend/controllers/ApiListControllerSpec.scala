@@ -50,9 +50,10 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
     val controller = new ApiListController(mcc, StrideAuthorisationServiceMock.aMock, LdapAuthorisationServiceMock.aMock, page, ApmServiceMock.aMock)
     ApmServiceMock.returnsData()
   }
-  private val fakeRequest = FakeRequest("GET", "/")
 
   "GET /" should {
+    val fakeRequest = FakeRequest("GET", "/")
+
     "return 200 with stride auth" in new Setup {
       StrideAuthorisationServiceMock.Auth.succeeds(GatekeeperRoles.USER)
 
@@ -86,6 +87,50 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       StrideAuthorisationServiceMock.Auth.sessionRecordNotFound()
       LdapAuthorisationServiceMock.Auth.notAuthorised
       val result = controller.page(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+    }
+  }
+
+  "GET /csv" should {
+    val fakeRequest = FakeRequest("GET", "/csv")
+
+    "return 200 with stride auth" in new Setup {
+      StrideAuthorisationServiceMock.Auth.succeeds(GatekeeperRoles.USER)
+
+      val result = controller.csv(fakeRequest)
+      status(result) shouldBe Status.OK
+    }
+
+    "return 200 with ldap auth" in new Setup {
+      StrideAuthorisationServiceMock.Auth.sessionRecordNotFound()
+      LdapAuthorisationServiceMock.Auth.succeeds
+      val result = controller.csv(fakeRequest)
+      status(result) shouldBe Status.OK
+    }
+
+    "return CSV" in new Setup {
+      StrideAuthorisationServiceMock.Auth.succeeds(GatekeeperRoles.USER)
+
+      val result = controller.csv(fakeRequest)
+      contentType(result) shouldBe Some("text/csv")
+      contentAsString(result) shouldBe
+        """name,serviceName,context,version,source,status,access,isTrial,environment,requiresTrust,lastPublishedAt
+          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,false,Sandbox,false,2022-10-12T19:00:00Z
+          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,false,Production,false,2022-10-12T19:00:00Z
+          |""".stripMargin
+    }
+
+    "return 403 for InsufficientEnrolments" in new Setup {
+      StrideAuthorisationServiceMock.Auth.hasInsufficientEnrolments()
+      LdapAuthorisationServiceMock.Auth.notAuthorised
+      val result = controller.csv(fakeRequest)
+      status(result) shouldBe Status.FORBIDDEN
+    }
+
+    "return 303 for SessionRecordNotFound" in new Setup {
+      StrideAuthorisationServiceMock.Auth.sessionRecordNotFound()
+      LdapAuthorisationServiceMock.Auth.notAuthorised
+      val result = controller.csv(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
     }
   }

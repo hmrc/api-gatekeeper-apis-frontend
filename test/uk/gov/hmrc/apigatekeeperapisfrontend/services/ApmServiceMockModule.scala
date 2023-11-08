@@ -20,6 +20,7 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
+import uk.gov.hmrc.apigatekeeperapisfrontend.models.EnvironmentDefinitions
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 
 trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -28,7 +29,7 @@ trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
     def aMock: ApmService
 
     def returnsData() = {
-      when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(List(defaultApiDefinition)))
+      when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(EnvironmentDefinitions(List(defaultApiDefinition), List(defaultApiDefinition))))
     }
 
   }

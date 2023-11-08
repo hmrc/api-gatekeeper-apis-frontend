@@ -16,16 +16,40 @@
 
 @import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 @import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
+@import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
+@import java.time.Instant
+@import java.time.temporal.ChronoUnit
 
 @this(layout: Layout, govukTable: GovukTable)
 
 @(apis: List[ApiDefinition])(implicit request: LoggedInRequest[_])
 
 @layout(pageTitle = Some("APIs")) {
-    @govukTable(Table(
-        rows = apis.map(data => Seq(TableRow(content = Text(data.name)), TableRow(content = Text(data.context.value)))),
-        head = Some(Seq(HeadCell(content = Text("API"), classes = "govuk-!-width-one-half"), HeadCell(content = Text("Context"), classes = "govuk-!-width-one-half"))),
-        caption=Some("APIs"),
-        captionClasses="govuk-table__caption--l"
-    ))
+    <div class="govuk-width-container ">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+            @govukTable(Table(
+                rows = apis.map(data => Seq(
+                    TableRow(content = Text(data.name)),
+                    TableRow(content = Text(data.context.value))
+                )),
+                head = Some(Seq(
+                    HeadCell(content = Text("API"), classes = "govuk-!-width-one-half"),
+                    HeadCell(content = Text("Context"), classes = "govuk-!-width-one-half"))),
+                caption = Some("REST APIs"),
+                captionClasses = "govuk-table__caption--l"
+            ))
+            </div>
+            <div class="govuk-grid-column-one-quarter">
+                <h2 class="govuk-heading-m">Downloads</h2>
+                <ul class="govuk-list">
+                    <li>
+                        <a href="@routes.ApiListController.csv" class="govuk-link" download="rest-apis-@{
+                            Instant.now.truncatedTo(ChronoUnit.SECONDS)
+                        }.csv">CSV of all REST APIs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 }
