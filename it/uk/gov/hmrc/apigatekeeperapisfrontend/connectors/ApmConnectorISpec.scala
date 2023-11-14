@@ -22,8 +22,9 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.{Application, Configuration, Mode}
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,6 +57,21 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
       val result = await(connector.fetchAllApis(Environment.SANDBOX))
 
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
+    }
+  }
+
+  "fetch api" should {
+    val url = "/api-definitions/service-name/fish"
+    "fetch all apis" in new Setup {
+      implicit val format: OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
+      stubFor(WireMock.get(urlEqualTo(url))
+        .willReturn(aResponse()
+          .withStatus(OK)
+          .withBody(Json.toJson[Locator[ApiDefinition]](Locator.Production(defaultApiDefinition)).toString)))
+
+      val result = await(connector.fetchApi(ServiceName("fish")))
+
+      result.value shouldBe Locator.Production(defaultApiDefinition)
     }
   }
 }

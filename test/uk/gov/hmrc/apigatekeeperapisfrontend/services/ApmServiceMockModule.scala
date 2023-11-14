@@ -22,6 +22,7 @@ import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.EnvironmentDefinitions
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 
 trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
@@ -32,6 +33,13 @@ trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
       when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(EnvironmentDefinitions(List(defaultApiDefinition), List(defaultApiDefinition))))
     }
 
+    def returnsSingleApi(serviceName: ServiceName) = {
+      when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(Some(Locator.Production(defaultApiDefinition))))
+    }
+
+    def returnsNoSingleApi(serviceName: ServiceName) = {
+      when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(None))
+    }
   }
 
   object ApmServiceMock extends BaseApmServiceMock {

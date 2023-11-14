@@ -16,20 +16,23 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
+
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnectorMockModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDataTestData, AsyncHmrcSpec}
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.{Locator, ServiceName}
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
-
-import java.time.Instant
 
 class ApmServiceSpec extends AsyncHmrcSpec {
 
   trait Setup extends ApmConnectorMockModule with ApiDataTestData {
     implicit val hc: HeaderCarrier = HeaderCarrier()
     val service                    = new ApmService(ApmConnectorMock.aMock)
+    val serviceName: ServiceName   = ServiceName("fish")
   }
+
   "Fetch All Apis" should {
     "use sandbox if only sandbox returned" in new Setup {
       ApmConnectorMock.returnsData(Environment.SANDBOX)
@@ -56,6 +59,14 @@ class ApmServiceSpec extends AsyncHmrcSpec {
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 3
       result.map(_.context).toSet shouldBe Set(contextFromSandbox, contextFromProduction, defaultContext)
+    }
+  }
+
+  "Fetch 1 Api" should {
+    "pass back the one it gets" in new Setup {
+      ApmConnectorMock.returnsSingleApi(serviceName)
+      val result = await(service.fetchApi(serviceName))
+      result.value shouldBe Locator.Production(defaultApiDefinition)
     }
   }
 }

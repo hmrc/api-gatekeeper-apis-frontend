@@ -24,18 +24,23 @@
 
 @(apis: List[ApiDefinition])(implicit request: LoggedInRequest[_])
 
-@layout(pageTitle = Some("APIs")) {
+@linkToDetails(data: ApiDefinition) = {
+    <a href="@routes.ApiDetailsController.page(data.serviceName)">@{data.name}</a>
+}
+
+@layout(pageTitle = Some("REST APIs")) {
     <div class="govuk-width-container ">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-three-quarters">
             @govukTable(Table(
-                rows = apis.map(data => Seq(
-                    TableRow(content = Text(data.name)),
-                    TableRow(content = Text(data.context.value))
-                )),
                 head = Some(Seq(
                     HeadCell(content = Text("API"), classes = "govuk-!-width-one-half"),
-                    HeadCell(content = Text("Context"), classes = "govuk-!-width-one-half"))),
+                    HeadCell(content = Text("Context"), classes = "govuk-!-width-one-half")
+                )),
+                rows = apis.map(data => Seq(
+                    TableRow(content = HtmlContent(linkToDetails(data))),
+                    TableRow(content = Text(data.context.value))
+                )),
                 caption = Some("REST APIs"),
                 captionClasses = "govuk-table__caption--l"
             ))
