@@ -1,0 +1,85 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+@import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
+@import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.breadcrumbs.BreadcrumbsItem
+@import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
+
+@import java.time.format.DateTimeFormatter
+@import java.time.ZoneId
+
+@this(layout: Layout, govukTable: GovukTable)
+
+@(api: Locator[ApiDefinition])(implicit request: LoggedInRequest[_])
+
+@mdtpLink = {
+    <a href="https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get">
+        https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get
+    </a>
+}
+
+@layout(pageTitle = Some(s"API Details - ${api.production.orElse(api.sandbox).map(_.name).get}"), breadcrumbs = Seq(
+    BreadcrumbsItem(content = Text("APIs"), href = Some(s"${routes.ApiListController.page}")),
+    BreadcrumbsItem(content = Text(api.production.orElse(api.sandbox).map(_.name).get)),
+)
+) {
+    <div class="govuk-width-container ">
+        @govukTable(Table(
+            rows = Seq(
+                Seq(TableRow(content = Text("Published to production")), TableRow(content = Text(api.production.flatMap(_.lastPublishedAt.map(time => DateTimeFormatter.ofPattern("d MMMM u").withZone(ZoneId.of("UTC")).format(time))).getOrElse("N/A")))),
+                Seq(TableRow(content = Text("Published to sandbox")), TableRow(content = Text(api.sandbox.flatMap(_.lastPublishedAt.map(time => DateTimeFormatter.ofPattern("d MMMM u").withZone(ZoneId.of("UTC")).format(time))).getOrElse("N/A")))),
+                Seq(TableRow(content = Text("Service name")), TableRow(content = Text(api.production.orElse(api.sandbox).map(_.serviceName).map(_.toString).get))),
+                Seq(TableRow(content = Text("Context")), TableRow(content = Text(api.production.orElse(api.sandbox).map(_.context).map(_.toString).get))),
+                Seq(TableRow(content = Text("MDTP repository page")), TableRow(content = HtmlContent(mdtpLink))),
+                Seq(TableRow(content = Text("Versions of this API")), TableRow(content = Text((api.sandbox.map(_.versionsAsList).map(_.length).getOrElse(0) + api.production.map(_.versionsAsList).map(_.length).getOrElse(0)).toString))),
+            ),
+            caption = api.production.orElse(api.sandbox).map(_.name),
+            captionClasses = "govuk-table__caption--l",
+            firstCellIsHeader = true
+        ))
+        @govukTable(Table(
+            head = Some(Seq(
+                HeadCell(content = Text("Version"), classes = "govuk-table__header"),
+                HeadCell(content = Text("Environment"), classes = "govuk-table__header"),
+                HeadCell(content = Text("Status"), classes = "govuk-table__header"),
+                HeadCell(content = Text("Access"), classes = "govuk-table__header"),
+                HeadCell(content = Text("Trial"), classes = "govuk-table__header"),
+                HeadCell(content = Text("Source"), classes = "govuk-table__header"),
+            )),
+            rows = api.sandbox.map(_.versionsAsList).getOrElse(List.empty).sorted.map(version => Seq(
+                TableRow(content = Text(version.versionNbr.toString())),
+                TableRow(content = Text(Environment.SANDBOX.displayText)),
+                TableRow(content = Text(version.status.displayText)),
+                TableRow(content = Text(version.access.displayText)),
+                TableRow(content = Text(version.access.equals(ApiAccess.Private(true)).toString)),
+                TableRow(content = Text(version.versionSource.toString)),
+            )) ++ api.production.map(_.versionsAsList).getOrElse(List.empty).sorted.map(version => Seq(
+                TableRow(content = Text(version.versionNbr.toString())),
+                TableRow(content = Text(Environment.PRODUCTION.displayText)),
+                TableRow(content = Text(version.status.displayText)),
+                TableRow(content = Text(version.access.displayText)),
+                TableRow(content = Text(version.access.equals(ApiAccess.Private(true)).toString)),
+                TableRow(content = Text(version.versionSource.toString)),
+            )),
+            caption = Some("Version details"),
+            captionClasses = "govuk-table__caption--m",
+            firstCellIsHeader = true
+        ))
+    </div>
+
+}

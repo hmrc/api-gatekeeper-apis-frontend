@@ -21,6 +21,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.EnvironmentDefinitions
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,5 +32,9 @@ class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionCo
       sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX)
       prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION)
     } yield EnvironmentDefinitions(sandboxApis, prodApis)
+  }
+
+  def fetchApi(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[Option[Locator[ApiDefinition]]] = {
+    apmConnector.fetchApi(serviceName)
   }
 }

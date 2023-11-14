@@ -1,8 +1,9 @@
 # microservice specific routes
 
-->         /hmrc-frontend           hmrcfrontend.Routes
+->         /hmrc-frontend                   hmrcfrontend.Routes
 
-GET        /                        uk.gov.hmrc.apigatekeeperapisfrontend.controllers.ApiListController.page
-GET        /csv                     uk.gov.hmrc.apigatekeeperapisfrontend.controllers.ApiListController.csv
+GET        /                                uk.gov.hmrc.apigatekeeperapisfrontend.controllers.ApiListController.page
+GET        /csv                             uk.gov.hmrc.apigatekeeperapisfrontend.controllers.ApiListController.csv
+GET        /api-details/:serviceName        uk.gov.hmrc.apigatekeeperapisfrontend.controllers.ApiDetailsController.page(serviceName: uk.gov.hmrc.apiplatform.modules.apis.domain.models.ServiceName)
 
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /assets/*file                    controllers.Assets.versioned(path = "/public", file: Asset)
