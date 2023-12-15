@@ -33,7 +33,6 @@ trait ApiDataTestData {
     description = "This is a test api",
     context = defaultContext,
     versions = Map(defaultVersion -> ApiVersion(defaultVersion, ApiStatus.STABLE, ApiAccess.PUBLIC, List(), true, None, ApiVersionSource.OAS)),
-    requiresTrust = false,
     isTestSupport = false,
     lastPublishedAt = Some(defaultPublish),
     categories = List(ApiCategory.OTHER)

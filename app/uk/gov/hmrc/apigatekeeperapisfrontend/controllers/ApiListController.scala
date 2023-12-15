@@ -66,7 +66,6 @@ class ApiListController @Inject() (
       ColumnDefinition("access", defView => defView.access.displayText),
       ColumnDefinition("isTrial", defView => defView.isTrial.toString),
       ColumnDefinition("environment", defView => defView.environment.displayText),
-      ColumnDefinition("requiresTrust", defView => defView.requiresTrust.toString),
       ColumnDefinition("lastPublishedAt", defView => defView.lastPublishedAt.map(_.toString).getOrElse(""))
     )
 
@@ -83,7 +82,6 @@ class ApiListController @Inject() (
               v.versionSource,
               v.status,
               v.access.accessType,
-              apiDef.requiresTrust,
               isTrial(v),
               Environment.SANDBOX,
               apiDef.lastPublishedAt
@@ -99,7 +97,6 @@ class ApiListController @Inject() (
               v.versionSource,
               v.status,
               v.access.accessType,
-              apiDef.requiresTrust,
               isTrial(v),
               Environment.PRODUCTION,
               apiDef.lastPublishedAt
