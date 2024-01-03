@@ -114,9 +114,9 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       val result = controller.csv(fakeRequest)
       contentType(result) shouldBe Some("text/csv")
       contentAsString(result) shouldBe
-        """name,serviceName,context,version,source,status,access,isTrial,environment,requiresTrust,lastPublishedAt
-          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,false,Sandbox,false,2022-10-12T19:00:00Z
-          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,false,Production,false,2022-10-12T19:00:00Z
+        """name,serviceName,context,version,source,status,access,isTrial,environment,lastPublishedAt
+          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,false,Sandbox,2022-10-12T19:00:00Z
+          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,false,Production,2022-10-12T19:00:00Z
           |""".stripMargin
     }
 

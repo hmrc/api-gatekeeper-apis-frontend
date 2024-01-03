@@ -30,7 +30,6 @@ case class ApiDefinitionView(
     versionSource: ApiVersionSource,
     status: ApiStatus,
     access: ApiAccessType,
-    requiresTrust: Boolean,
     isTrial: Boolean,
     environment: Environment,
     lastPublishedAt: Option[Instant]
