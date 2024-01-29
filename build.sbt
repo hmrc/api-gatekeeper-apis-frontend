@@ -5,7 +5,6 @@ val appName = "api-gatekeeper-apis-frontend"
 
 Global / bloopAggregateSourceDependencies := true
 
-ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 ThisBuild / semanticdbEnabled                              := true
 ThisBuild / semanticdbVersion                              := scalafixSemanticdb.revision
 
