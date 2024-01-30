@@ -18,9 +18,8 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "uk.gov.hmrc"         %% "bootstrap-test-play-30"          % bootstrapVersion,
-    "org.jsoup"            % "jsoup"                           % "1.17.2",
-    "com.vladsch.flexmark" % "flexmark-all"                    % "0.36.8",
-    "uk.gov.hmrc"         %% "api-platform-test-common-domain" % commonDomainVersion
+    "uk.gov.hmrc" %% "bootstrap-test-play-30"          % bootstrapVersion,
+    "org.jsoup"    % "jsoup"                           % "1.17.2",
+    "uk.gov.hmrc" %% "api-platform-test-common-domain" % commonDomainVersion
   ).map(_ % "test, it")
 }
