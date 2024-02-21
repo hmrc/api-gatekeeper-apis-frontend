@@ -11,7 +11,7 @@ object AppDependencies {
 
   val compile = Seq(
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30"   % bootstrapVersion,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"   % "8.4.0",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"   % "8.5.0",
     "uk.gov.hmrc"       %% "internal-auth-client-play-30" % "1.10.0",
     "org.apache.commons" % "commons-csv"                  % "1.10.0",
     "uk.gov.hmrc"       %% "api-platform-api-domain"      % apiDomainVersion
