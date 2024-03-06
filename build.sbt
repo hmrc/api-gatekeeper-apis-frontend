@@ -1,19 +1,20 @@
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.DefaultBuildSettings
 import bloop.integrations.sbt.BloopDefaults
 
 val appName = "api-gatekeeper-apis-frontend"
 
 Global / bloopAggregateSourceDependencies := true
+Global / bloopExportJarClassifiers := Some(Set("sources"))
 
-ThisBuild / semanticdbEnabled                              := true
-ThisBuild / semanticdbVersion                              := scalafixSemanticdb.revision
-
-scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / majorVersion := 0
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
-    majorVersion   := 0,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
@@ -21,8 +22,6 @@ lazy val microservice = Project(appName, file("."))
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
     pipelineStages := Seq(gzip)
   )
-  .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
   .settings(
     TwirlKeys.templateImports ++= Seq(
       "views.html.helper.CSPNonce",
@@ -39,11 +38,6 @@ lazy val microservice = Project(appName, file("."))
     inConfig(Test)(BloopDefaults.configSettings)
   )
   .settings(
-    IntegrationTest / testOptions ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-eT")),
-    IntegrationTest / unmanagedSourceDirectories += (baseDirectory.value / "test-common"),
-    inConfig(IntegrationTest)(BloopDefaults.configSettings)
-  )
-  .settings(
     scalacOptions ++= Seq(
       "-Wconf:cat=unused&src=views/.*\\.scala:s",
       "-Wconf:cat=unused&src=.*RoutesPrefix\\.scala:s",
@@ -53,14 +47,24 @@ lazy val microservice = Project(appName, file("."))
     )
   )
 
+lazy val it = (project in file("it"))
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(
+    name := "integration-tests",
+    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
+    DefaultBuildSettings.itSettings()
+  )
+
 commands ++= Seq(
-  Command.command("run-all-tests") { state => "test" :: "it:test" :: state },
-
-  Command.command("clean-and-test") { state => "clean" :: "compile" :: "run-all-tests" :: state },
-
-  // Coverage does not need compile !
-  Command.command("pre-commit") { state => "clean" :: "scalafmtAll" :: "scalafixAll" :: "coverage" :: "run-all-tests" :: "coverageReport" :: "coverageOff" :: state }
+  Command.command("cleanAll") { state => "clean" :: "it/clean" :: state },
+  Command.command("fmtAll") { state => "scalafmtAll" :: "it/scalafmtAll" :: state },
+  Command.command("fixAll") { state => "scalafixAll" :: "it/scalafixAll" :: state },
+  Command.command("testAll") { state => "test" :: "it/test" :: state },
+  Command.command("run-all-tests") { state => "testAll" :: state },
+  Command.command("clean-and-test") { state => "cleanAll" :: "compile" :: "run-all-tests" :: state },
+  Command.command("pre-commit") { state => "cleanAll" :: "scalafmtAll" :: "scalafixAll" :: "coverage" :: "run-all-tests" :: "coverageReport" :: "coverageOff" :: state }
 )
 
 
-ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+

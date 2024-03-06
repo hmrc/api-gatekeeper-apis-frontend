@@ -21,5 +21,5 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-test-play-30"          % bootstrapVersion,
     "org.jsoup"    % "jsoup"                           % "1.17.2",
     "uk.gov.hmrc" %% "api-platform-test-common-domain" % commonDomainVersion
-  ).map(_ % "test, it")
+  ).map(_ % "test")
 }
