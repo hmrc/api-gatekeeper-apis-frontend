@@ -27,9 +27,10 @@
 
 @navigation = @{
   Seq(
+    NavigationItem(content = Text("APIs"), href = Some(uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes.ApiListController.page.url)),
     NavigationItem(content = Text("Applications"), href = Some(gatekeeperConfig.applicationsPageUri)),
     NavigationItem(content = Text("Developers"), href = Some(gatekeeperConfig.developersPageUri)),
-    NavigationItem(content = Text("Terms of use"), href =Some(gatekeeperConfig.termsOfUsePageUri)),
+    NavigationItem(content = Text("Terms of use"), href = Some(gatekeeperConfig.termsOfUsePageUri)),
     NavigationItem(content = Text("Email"), href = Some(gatekeeperConfig.emailsPageUri)),
     NavigationItem(content = Text("API Approvals"), href = Some(gatekeeperConfig.pendingUri)),
     NavigationItem(content = Text("XML"), href = Some(gatekeeperConfig.xmlUri))
