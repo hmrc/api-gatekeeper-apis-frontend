@@ -24,10 +24,11 @@ import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Json, OFormat}
 import play.api.{Application, Configuration, Mode}
+import uk.gov.hmrc.http.HeaderCarrier
+
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
-import uk.gov.hmrc.http.HeaderCarrier
 
 class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with ApiDataTestData {
 
