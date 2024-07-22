@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor, urlEqualTo}
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor, urlEqualTo}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, Configuration, Mode}
+
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Json, OFormat}
+import play.api.{Application, Configuration, Mode}
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment

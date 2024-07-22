@@ -1,5 +1,4 @@
 import uk.gov.hmrc.DefaultBuildSettings
-import bloop.integrations.sbt.BloopDefaults
 
 val appName = "api-gatekeeper-apis-frontend"
 
@@ -13,13 +12,11 @@ ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-    // suppress warnings in generated routes files
-    scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    retrieveManaged := true,
     pipelineStages := Seq(gzip)
   )
   .settings(
@@ -30,20 +27,17 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     )
   )
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)
   .settings(
-    Test / testOptions ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-eT")),
-    Test / unmanagedSourceDirectories += (baseDirectory.value / "test-common"),
-    inConfig(Test)(BloopDefaults.configSettings)
+    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
+    Test / unmanagedSourceDirectories += baseDirectory.value / "test-common"
   )
   .settings(
     scalacOptions ++= Seq(
       "-Wconf:cat=unused&src=views/.*\\.scala:s",
-      "-Wconf:cat=unused&src=.*RoutesPrefix\\.scala:s",
-      "-Wconf:cat=unused&src=.*Routes\\.scala:s",
-      "-Wconf:cat=unused&src=.*ReverseRoutes\\.scala:s",
-      "-Wconf:cat=deprecation&src=.*Routes\\.scala:s"
+      // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
+      // suppress warnings in generated routes files
+      "-Wconf:src=routes/.*:s"
     )
   )
 
@@ -61,10 +55,8 @@ commands ++= Seq(
   Command.command("fmtAll") { state => "scalafmtAll" :: "it/scalafmtAll" :: state },
   Command.command("fixAll") { state => "scalafixAll" :: "it/scalafixAll" :: state },
   Command.command("testAll") { state => "test" :: "it/test" :: state },
+
   Command.command("run-all-tests") { state => "testAll" :: state },
   Command.command("clean-and-test") { state => "cleanAll" :: "compile" :: "run-all-tests" :: state },
-  Command.command("pre-commit") { state => "cleanAll" :: "scalafmtAll" :: "scalafixAll" :: "coverage" :: "run-all-tests" :: "coverageReport" :: "coverageOff" :: state }
+  Command.command("pre-commit") { state => "cleanAll" :: "fmtAll" :: "fixAll" :: "coverage" :: "testAll" :: "coverageOff" :: "coverageAggregate" :: state }
 )
-
-
-
