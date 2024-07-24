@@ -19,11 +19,12 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.services
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+import uk.gov.hmrc.http.HeaderCarrier
+
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.EnvironmentDefinitions
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
-import uk.gov.hmrc.http.HeaderCarrier
 
 class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionContext) {
 

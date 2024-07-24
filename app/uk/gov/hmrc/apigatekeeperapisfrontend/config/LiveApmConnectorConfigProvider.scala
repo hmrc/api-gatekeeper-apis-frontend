@@ -18,8 +18,9 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.config
 
 import com.google.inject.{Inject, Provider, Singleton}
 
-import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 
 @Singleton
 class LiveApmConnectorConfigProvider @Inject() (config: ServicesConfig) extends Provider[ApmConnector.Config] {
