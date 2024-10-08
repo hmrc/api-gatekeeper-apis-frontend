@@ -29,17 +29,35 @@ trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
   trait BaseApmServiceMock extends ApiDataTestData {
     def aMock: ApmService
 
-    def returnsData() = {
-      when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(EnvironmentDefinitions(List(defaultApiDefinition), List(defaultApiDefinition))))
+    object FetchAllApis {
+
+      def returnsData() = {
+        when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(EnvironmentDefinitions(List(defaultApiDefinition), List(defaultApiDefinition))))
+      }
     }
 
-    def returnsSingleApi(serviceName: ServiceName) = {
-      when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(Some(Locator.Production(defaultApiDefinition))))
+    object FetchApi {
+
+      def returnsSingleApi(serviceName: ServiceName) = {
+        when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(Some(Locator.Production(defaultApiDefinition))))
+      }
+
+      def returnsNoSingleApi(serviceName: ServiceName) = {
+        when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(None))
+      }
     }
 
-    def returnsNoSingleApi(serviceName: ServiceName) = {
-      when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(None))
+    object FetchApiEvents {
+
+      def returnsEvent(serviceName: ServiceName) = {
+        when(aMock.fetchApiEvents(eqTo(serviceName))(*)).thenReturn(Future.successful(List(defaultEvent)))
+      }
+
+      def returnsNoEvents(serviceName: ServiceName) = {
+        when(aMock.fetchApiEvents(eqTo(serviceName))(*)).thenReturn(Future.successful(List.empty))
+      }
     }
+
   }
 
   object ApmServiceMock extends BaseApmServiceMock {

@@ -24,6 +24,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
+import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
@@ -39,6 +40,10 @@ class ApmConnector @Inject() (http: HttpClientV2, config: ApmConnector.Config)(i
     implicit val formatter: OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
 
     http.get(url"${config.serviceBaseUrl}/api-definitions/service-name/$serviceName").execute[Option[Locator[ApiDefinition]]]
+  }
+
+  def fetchApiEvents(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[List[DisplayApiEvent]] = {
+    http.get(url"${config.serviceBaseUrl}/api-definitions/service-name/$serviceName/events").execute[List[DisplayApiEvent]]
   }
 }
 

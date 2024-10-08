@@ -49,7 +49,7 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
     val mcc  = app.injector.instanceOf[MessagesControllerComponents]
 
     val controller = new ApiListController(mcc, StrideAuthorisationServiceMock.aMock, LdapAuthorisationServiceMock.aMock, page, ApmServiceMock.aMock)
-    ApmServiceMock.returnsData()
+    ApmServiceMock.FetchAllApis.returnsData()
   }
 
   "GET /" should {

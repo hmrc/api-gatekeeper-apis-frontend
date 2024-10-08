@@ -52,6 +52,10 @@
             captionClasses = "govuk-table__caption--l",
             firstCellIsHeader = true
         ))
+        <h2 class="govuk-heading-m">API changes</h2>
+        <p class="govuk-body govuk-!-margin-bottom-8">
+            <a href="@{routes.ApiDetailsController.events(api.production.orElse(api.sandbox).map(_.serviceName).get)}" class="govuk-button govuk-button--primary govuk-link--no-underline">View API Changes</a>
+        </p>
         @govukTable(Table(
             head = Some(Seq(
                 HeadCell(content = Text("Version"), classes = "govuk-table__header"),

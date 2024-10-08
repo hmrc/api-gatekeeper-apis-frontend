@@ -1,0 +1,65 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+@import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
+@import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.breadcrumbs.BreadcrumbsItem
+@import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
+@import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
+
+@import java.time.format.DateTimeFormatter
+@import java.time.ZoneId
+
+@this(layout: Layout, govukTable: GovukTable)
+
+@(apiName: String,serviceName: ServiceName, events: List[DisplayApiEvent])(implicit request: LoggedInRequest[_])
+
+@eventDetails(eventType: String, metadata:List[String])={
+  <p class="govuk-!-margin-top-0">
+      <span class="govuk-!-font-weight-bold govuk-!-display-block">@eventType</span>
+      @Html({metadata.mkString("<br/>")})
+  </p>
+}
+@layout(pageTitle = Some(s"API changes - $apiName"), breadcrumbs = Seq(
+    BreadcrumbsItem(content = Text("APIs"), href = Some(s"${routes.ApiListController.page}")),
+    BreadcrumbsItem(content = Text(apiName), href = Some(s"${routes.ApiDetailsController.page(serviceName)}")),
+)
+) {
+        <h1 class="govuk-heading-l govuk-!-margin-top-0">
+            <span class="govuk-caption-l">API changes</span>
+            @apiName
+        </h1>
+  @if(events.isEmpty) {
+      <p class="govuk-body">There are no matching API changes.</p>
+  } else {
+      <p class="govuk-body">Showing <span class="govuk-!-font-weight-bold">@{events.length}</span> API changes</p>
+      @defining(DateTimeFormatter.ofPattern("d MMMM u HH:mm:ss").withZone(ZoneId.of("UTC"))) { formatter =>
+          @govukTable(Table(
+              head = Some(Seq(
+                  HeadCell(content = Text("Date and time"), classes = "govuk-table__header"),
+                  HeadCell(content = Text("What changed"), classes = "govuk-table__header"),
+                  HeadCell(content = Text("Environment"), classes = "govuk-table__header"),
+              )),
+              rows = events.sorted.map(event => Seq(
+                  TableRow(content = Text(formatter.format(event.eventDateTime))),
+                  TableRow(content = HtmlContent(eventDetails(event.eventType, event.metaData))),
+                  TableRow(content = Text(event.environment.displayText)),
+              ))
+          ))
+      }
+  }
+}

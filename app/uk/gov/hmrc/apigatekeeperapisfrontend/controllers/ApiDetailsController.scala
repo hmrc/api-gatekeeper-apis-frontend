@@ -17,13 +17,13 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.actions.GatekeeperRoleActions
 import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService
-import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.{ApiDetailsPage, ErrorTemplate}
+import uk.gov.hmrc.apigatekeeperapisfrontend.views.html._
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationService, StrideAuthorisationService}
@@ -34,6 +34,7 @@ class ApiDetailsController @Inject() (
     strideAuthorisationService: StrideAuthorisationService,
     val ldapAuthorisationService: LdapAuthorisationService,
     apiDetailsPage: ApiDetailsPage,
+    apiEventsPage: ApiEventsPage,
     errorTemplate: ErrorTemplate,
     apmService: ApmService
   )(implicit override val ec: ExecutionContext
@@ -46,6 +47,17 @@ class ApiDetailsController @Inject() (
         case Some(defs) => Ok(apiDetailsPage(defs))
         case None       => NotFound(errorTemplate("API Not Found", "API Not Found", s"The api ${serviceName} hasn't been found in either environment"))
       }
+  }
 
+  def events(serviceName: ServiceName): Action[AnyContent] = loggedInOnly() { implicit request =>
+    apmService
+      .fetchApi(serviceName)
+      .flatMap {
+        case Some(api) =>
+          val definition = api.production.orElse(api.sandbox).get
+          apmService.fetchApiEvents(serviceName).map(events => Ok(apiEventsPage(definition.name, definition.serviceName, events)))
+
+        case None => Future.successful(NotFound(errorTemplate("API Not Found", "API Not Found", s"The api ${serviceName} hasn't been found")))
+      }
   }
 }

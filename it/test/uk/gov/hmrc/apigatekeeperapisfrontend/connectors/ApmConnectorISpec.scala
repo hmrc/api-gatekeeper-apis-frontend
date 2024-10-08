@@ -26,6 +26,7 @@ import play.api.libs.json.{Json, OFormat}
 import play.api.{Application, Configuration, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
@@ -74,6 +75,20 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
       val result = await(connector.fetchApi(ServiceName("fish")))
 
       result.value shouldBe Locator.Production(defaultApiDefinition)
+    }
+  }
+
+  "fetch api events" should {
+    val url = "/api-definitions/service-name/fish/events"
+    "fetch apis events" in new Setup {
+      stubFor(WireMock.get(urlEqualTo(url))
+        .willReturn(aResponse()
+          .withStatus(OK)
+          .withBody(Json.toJson[List[DisplayApiEvent]](List(defaultEvent)).toString())))
+
+      val result = await(connector.fetchApiEvents(ServiceName("fish")))
+
+      result shouldBe List(defaultEvent)
     }
   }
 }
