@@ -36,16 +36,16 @@ class ApmServiceSpec extends AsyncHmrcSpec {
 
   "Fetch All Apis" should {
     "use sandbox if only sandbox returned" in new Setup {
-      ApmConnectorMock.returnsData(Environment.SANDBOX)
-      ApmConnectorMock.returnsNoData(Environment.PRODUCTION)
+      ApmConnectorMock.FetchAllApis.returnsData(Environment.SANDBOX)
+      ApmConnectorMock.FetchAllApis.returnsNoData(Environment.PRODUCTION)
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 1
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
 
     "use production if only production returned" in new Setup {
-      ApmConnectorMock.returnsNoData(Environment.SANDBOX)
-      ApmConnectorMock.returnsData(Environment.PRODUCTION)
+      ApmConnectorMock.FetchAllApis.returnsNoData(Environment.SANDBOX)
+      ApmConnectorMock.FetchAllApis.returnsData(Environment.PRODUCTION)
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 1
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
@@ -54,8 +54,11 @@ class ApmServiceSpec extends AsyncHmrcSpec {
     "merge them when both are returned" in new Setup {
       private val contextFromSandbox: ApiContext    = ApiContext("test/ciao")
       private val contextFromProduction: ApiContext = ApiContext("test/ola")
-      ApmConnectorMock.returnsData(Environment.SANDBOX, List(defaultApiDefinition.copy(lastPublishedAt = Some(Instant.now)), defaultApiDefinition.copy(context = contextFromSandbox)))
-      ApmConnectorMock.returnsData(Environment.PRODUCTION, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
+      ApmConnectorMock.FetchAllApis.returnsData(
+        Environment.SANDBOX,
+        List(defaultApiDefinition.copy(lastPublishedAt = Some(Instant.now)), defaultApiDefinition.copy(context = contextFromSandbox))
+      )
+      ApmConnectorMock.FetchAllApis.returnsData(Environment.PRODUCTION, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
 
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 3
@@ -65,9 +68,17 @@ class ApmServiceSpec extends AsyncHmrcSpec {
 
   "Fetch 1 Api" should {
     "pass back the one it gets" in new Setup {
-      ApmConnectorMock.returnsSingleApi(serviceName)
+      ApmConnectorMock.FetchApi.returnsSingleApi(serviceName)
       val result = await(service.fetchApi(serviceName))
       result.value shouldBe Locator.Production(defaultApiDefinition)
+    }
+  }
+
+  "Fetch Api Events" should {
+    "pass back the ones it gets" in new Setup {
+      ApmConnectorMock.FetchApiEvents.returnsApiEvents(serviceName)
+      val result = await(service.fetchApiEvents(serviceName))
+      result shouldBe List(defaultEvent)
     }
   }
 }

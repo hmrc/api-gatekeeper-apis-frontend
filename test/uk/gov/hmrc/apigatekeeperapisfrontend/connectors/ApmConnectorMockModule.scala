@@ -20,6 +20,7 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
+import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
@@ -29,16 +30,29 @@ trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar wit
   trait BaseApmConnectorMock {
     def aMock: ApmConnector
 
-    def returnsData(env: Environment, data: List[ApiDefinition] = List(defaultApiDefinition)) = {
-      when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(data))
+    object FetchAllApis {
+
+      def returnsData(env: Environment, data: List[ApiDefinition] = List(defaultApiDefinition)) = {
+        when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(data))
+      }
+
+      def returnsNoData(env: Environment) = {
+        when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(List.empty))
+      }
     }
 
-    def returnsSingleApi(serviceName: ServiceName, data: Option[Locator[ApiDefinition]] = Some(Locator.Production(defaultApiDefinition))) = {
-      when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(data))
+    object FetchApiEvents {
+
+      def returnsApiEvents(serviceName: ServiceName, data: List[DisplayApiEvent] = List(defaultEvent)) = {
+        when(aMock.fetchApiEvents(eqTo(serviceName))(*)).thenReturn(Future.successful(data))
+      }
     }
 
-    def returnsNoData(env: Environment) = {
-      when(aMock.fetchAllApis(eqTo(env))(*)).thenReturn(Future.successful(List.empty))
+    object FetchApi {
+
+      def returnsSingleApi(serviceName: ServiceName, data: Option[Locator[ApiDefinition]] = Some(Locator.Production(defaultApiDefinition))) = {
+        when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(data))
+      }
     }
   }
 
