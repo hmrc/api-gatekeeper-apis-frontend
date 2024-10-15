@@ -43,8 +43,8 @@ trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar wit
 
     object FetchApiEvents {
 
-      def returnsApiEvents(serviceName: ServiceName, data: List[DisplayApiEvent] = List(defaultEvent)) = {
-        when(aMock.fetchApiEvents(eqTo(serviceName))(*)).thenReturn(Future.successful(data))
+      def returnsApiEvents(serviceName: ServiceName, data: List[DisplayApiEvent] = List(defaultEvent), includeNoChange: Boolean = true) = {
+        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(includeNoChange))(*)).thenReturn(Future.successful(data))
       }
     }
 

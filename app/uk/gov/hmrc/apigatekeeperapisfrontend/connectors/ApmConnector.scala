@@ -42,8 +42,8 @@ class ApmConnector @Inject() (http: HttpClientV2, config: ApmConnector.Config)(i
     http.get(url"${config.serviceBaseUrl}/api-definitions/service-name/$serviceName").execute[Option[Locator[ApiDefinition]]]
   }
 
-  def fetchApiEvents(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[List[DisplayApiEvent]] = {
-    http.get(url"${config.serviceBaseUrl}/api-definitions/service-name/$serviceName/events").execute[List[DisplayApiEvent]]
+  def fetchApiEvents(serviceName: ServiceName, includeNoChange: Boolean = true)(implicit hc: HeaderCarrier): Future[List[DisplayApiEvent]] = {
+    http.get(url"${config.serviceBaseUrl}/api-definitions/service-name/$serviceName/events?includeNoChange=$includeNoChange").execute[List[DisplayApiEvent]]
   }
 }
 

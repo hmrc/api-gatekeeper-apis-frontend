@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
+import play.api.data.Form
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,14 +52,24 @@ class ApiDetailsController @Inject() (
   }
 
   def events(serviceName: ServiceName): Action[AnyContent] = loggedInOnly() { implicit request =>
-    apmService
-      .fetchApi(serviceName)
-      .flatMap {
-        case Some(api) =>
-          val definition = api.production.orElse(api.sandbox).get
-          apmService.fetchApiEvents(serviceName).map(events => Ok(apiEventsPage(definition.name, definition.serviceName, events)))
+    def handleValidForm(form: EventFiltersForm) = {
+      apmService
+        .fetchApi(serviceName)
+        .flatMap {
+          case Some(api) =>
+            val definition = api.production.orElse(api.sandbox).get
+            apmService.fetchApiEvents(serviceName, form.includeNoChange).map { events =>
+              Ok(apiEventsPage(definition.name, definition.serviceName, events, EventFiltersForm.form.fill(form)))
+            }
 
-        case None => Future.successful(NotFound(errorTemplate("API Not Found", "API Not Found", s"The api ${serviceName} hasn't been found")))
-      }
+          case None => Future.successful(NotFound(errorTemplate("API Not Found", "API Not Found", s"The api ${serviceName} hasn't been found")))
+        }
+    }
+
+    def handleFormError(form: Form[EventFiltersForm]) = {
+      Future.successful(BadRequest(apiEventsPage("", serviceName, List.empty, form)))
+    }
+
+    EventFiltersForm.form.bindFromRequest().fold(handleFormError, handleValidForm)
   }
 }

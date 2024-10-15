@@ -49,12 +49,12 @@ trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
     object FetchApiEvents {
 
-      def returnsEvent(serviceName: ServiceName) = {
-        when(aMock.fetchApiEvents(eqTo(serviceName))(*)).thenReturn(Future.successful(List(defaultEvent)))
+      def returnsEvent(serviceName: ServiceName, includeNoChange: Boolean = true) = {
+        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(includeNoChange))(*)).thenReturn(Future.successful(List(defaultEvent)))
       }
 
       def returnsNoEvents(serviceName: ServiceName) = {
-        when(aMock.fetchApiEvents(eqTo(serviceName))(*)).thenReturn(Future.successful(List.empty))
+        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(true))(*)).thenReturn(Future.successful(List.empty))
       }
     }
 

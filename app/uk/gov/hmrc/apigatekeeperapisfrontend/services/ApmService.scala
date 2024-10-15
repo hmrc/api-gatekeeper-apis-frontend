@@ -39,7 +39,7 @@ class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionCo
     apmConnector.fetchApi(serviceName)
   }
 
-  def fetchApiEvents(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[List[DisplayApiEvent]] = {
-    apmConnector.fetchApiEvents(serviceName)
+  def fetchApiEvents(serviceName: ServiceName, includeNoChange: Boolean = true)(implicit hc: HeaderCarrier): Future[List[DisplayApiEvent]] = {
+    apmConnector.fetchApiEvents(serviceName, includeNoChange)
   }
 }
