@@ -3,8 +3,8 @@ import sbt._
 object AppDependencies {
 
   private val bootstrapVersion = "9.5.0"
-  val apiDomainVersion         = "0.19.0"
-  val commonDomainVersion      = "0.16.0"
+  val apiDomainVersion         = "0.19.1"
+  val commonDomainVersion      = "0.17.0"
 
   val compile = Seq(
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30"   % bootstrapVersion,
@@ -15,8 +15,8 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "uk.gov.hmrc" %% "bootstrap-test-play-30"          % bootstrapVersion,
-    "org.jsoup"    % "jsoup"                           % "1.17.2",
-    "uk.gov.hmrc" %% "api-platform-test-common-domain" % commonDomainVersion
+    "uk.gov.hmrc" %% "bootstrap-test-play-30"              % bootstrapVersion,
+    "org.jsoup"    % "jsoup"                               % "1.17.2",
+    "uk.gov.hmrc" %% "api-platform-common-domain-fixtures" % commonDomainVersion
   ).map(_ % "test")
 }
