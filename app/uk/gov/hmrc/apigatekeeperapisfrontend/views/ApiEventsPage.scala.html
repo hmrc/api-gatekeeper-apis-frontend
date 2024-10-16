@@ -20,13 +20,14 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.breadcrumbs.BreadcrumbsItem
 @import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
 @import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
+@import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.EventFiltersForm
 
 @import java.time.format.DateTimeFormatter
 @import java.time.ZoneId
 
 @this(layout: Layout, govukTable: GovukTable)
 
-@(apiName: String,serviceName: ServiceName, events: List[DisplayApiEvent])(implicit request: LoggedInRequest[_])
+@(apiName: String,serviceName: ServiceName, events: List[DisplayApiEvent], form: Form[EventFiltersForm])(implicit request: LoggedInRequest[_])
 
 @eventDetails(eventType: String, metadata:List[String])={
   <p class="govuk-!-margin-top-0">
@@ -47,6 +48,28 @@
       <p class="govuk-body">There are no matching API changes.</p>
   } else {
       <p class="govuk-body">Showing <span class="govuk-!-font-weight-bold">@{events.length}</span> API changes</p>
+
+      <form name="application-filters" action="@routes.ApiDetailsController.events(serviceName).url" method="get">
+          @defining(form("includeNoChange").value == Some("true")) { includeNoChange =>
+              <div class="govuk-filter-row">
+                  <div class="govuk-form-group govuk-!-padding-right-6 js-visible">
+                      <label class="govuk-label govuk-!-font-weight-bold" for="access_type">
+                          Filter by type of change
+                      </label>
+
+                      <select class="govuk-select full-width" id="include_no_change" name="includeNoChange">
+                          <option @if(includeNoChange) {selected} value="true">All</option>
+                          <option @if(!includeNoChange) {selected} value="false">Excluding no change</option>
+                      </select>
+                  </div>
+              </div>
+          }
+
+          <div class="appsearch-buttons">
+              <input id="submitButton" type="submit" value="Submit" name="main-submit" class="govuk-button"/>
+          </div>
+      </form>
+
       @defining(DateTimeFormatter.ofPattern("d MMMM u HH:mm:ss").withZone(ZoneId.of("UTC"))) { formatter =>
           @govukTable(Table(
               head = Some(Seq(

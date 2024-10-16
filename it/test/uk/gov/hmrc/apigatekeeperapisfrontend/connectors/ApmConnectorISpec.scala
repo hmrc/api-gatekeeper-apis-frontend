@@ -79,14 +79,26 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
   }
 
   "fetch api events" should {
-    val url = "/api-definitions/service-name/fish/events"
     "fetch apis events" in new Setup {
+      val url = "/api-definitions/service-name/fish/events?includeNoChange=true"
       stubFor(WireMock.get(urlEqualTo(url))
         .willReturn(aResponse()
           .withStatus(OK)
           .withBody(Json.toJson[List[DisplayApiEvent]](List(defaultEvent)).toString())))
 
       val result = await(connector.fetchApiEvents(ServiceName("fish")))
+
+      result shouldBe List(defaultEvent)
+    }
+
+    "fetch apis events, excluding no change" in new Setup {
+      val url = "/api-definitions/service-name/fish/events?includeNoChange=false"
+      stubFor(WireMock.get(urlEqualTo(url))
+        .willReturn(aResponse()
+          .withStatus(OK)
+          .withBody(Json.toJson[List[DisplayApiEvent]](List(defaultEvent)).toString())))
+
+      val result = await(connector.fetchApiEvents(ServiceName("fish"), includeNoChange = false))
 
       result shouldBe List(defaultEvent)
     }

@@ -80,5 +80,11 @@ class ApmServiceSpec extends AsyncHmrcSpec {
       val result = await(service.fetchApiEvents(serviceName))
       result shouldBe List(defaultEvent)
     }
+
+    "pass back the ones it gets, request to exclude no change events" in new Setup {
+      ApmConnectorMock.FetchApiEvents.returnsApiEvents(serviceName, includeNoChange = false)
+      val result = await(service.fetchApiEvents(serviceName, includeNoChange = false))
+      result shouldBe List(defaultEvent)
+    }
   }
 }
