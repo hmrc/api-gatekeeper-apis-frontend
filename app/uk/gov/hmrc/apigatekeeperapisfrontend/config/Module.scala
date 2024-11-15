@@ -18,7 +18,7 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.config
 
 import com.google.inject.AbstractModule
 
-import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
+import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.{ApmConnector, ThirdPartyApplicationConnector}
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.HandleForbiddenWithView
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.actions.ForbiddenHandler
 
@@ -29,6 +29,7 @@ class Module extends AbstractModule {
     bind(classOf[ForbiddenHandler]).to(classOf[HandleForbiddenWithView])
     bind(classOf[GatekeeperConfig]).toProvider(classOf[GatekeeperConfigProvider])
     bind(classOf[ApmConnector.Config]).toProvider(classOf[LiveApmConnectorConfigProvider])
+    bind(classOf[ThirdPartyApplicationConnector.Config]).toProvider(classOf[TPAConnectorConfigProvider])
     bind(classOf[AppConfig]).asEagerSingleton()
   }
 }

@@ -28,7 +28,7 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmServiceMockModule
+import uk.gov.hmrc.apigatekeeperapisfrontend.services.{ApmServiceMockModule, TpaServiceMockModule}
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.AsyncHmrcSpec
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.{ApiDetailsPage, ApiEventsPage, ErrorTemplate}
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
@@ -45,14 +45,28 @@ class ApiDetailsControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       )
       .build()
 
-  trait Setup extends MockitoSugar with ArgumentMatchersSugar with StrideAuthorisationServiceMockModule with LdapAuthorisationServiceMockModule with ApmServiceMockModule {
+  trait Setup extends MockitoSugar
+      with ArgumentMatchersSugar
+      with StrideAuthorisationServiceMockModule
+      with LdapAuthorisationServiceMockModule
+      with ApmServiceMockModule
+      with TpaServiceMockModule {
     val detailsPage = app.injector.instanceOf[ApiDetailsPage]
     val eventsPage  = app.injector.instanceOf[ApiEventsPage]
     val error       = app.injector.instanceOf[ErrorTemplate]
     val mcc         = app.injector.instanceOf[MessagesControllerComponents]
     val serviceName = ServiceName("fish")
 
-    val controller = new ApiDetailsController(mcc, StrideAuthorisationServiceMock.aMock, LdapAuthorisationServiceMock.aMock, detailsPage, eventsPage, error, ApmServiceMock.aMock)
+    val controller = new ApiDetailsController(
+      mcc,
+      StrideAuthorisationServiceMock.aMock,
+      LdapAuthorisationServiceMock.aMock,
+      detailsPage,
+      eventsPage,
+      error,
+      ApmServiceMock.aMock,
+      TpaServiceMock.aMock
+    )
   }
 
   "GET /api-details/:service-name" should {
@@ -61,6 +75,7 @@ class ApiDetailsControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
     "return 200 with stride auth" in new Setup {
       StrideAuthorisationServiceMock.Auth.succeeds(GatekeeperRoles.USER)
       ApmServiceMock.FetchApi.returnsSingleApi(serviceName)
+      TpaServiceMock.FetchAllApplications.returnsData()
 
       val result = controller.page(serviceName)(fakeRequest)
       status(result) shouldBe Status.OK
@@ -70,6 +85,7 @@ class ApiDetailsControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       StrideAuthorisationServiceMock.Auth.sessionRecordNotFound()
       LdapAuthorisationServiceMock.Auth.succeeds
       ApmServiceMock.FetchApi.returnsSingleApi(serviceName)
+      TpaServiceMock.FetchAllApplications.returnsData()
 
       val result = controller.page(serviceName)(fakeRequest)
       status(result) shouldBe Status.OK
@@ -78,6 +94,7 @@ class ApiDetailsControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
     "return HTML" in new Setup {
       StrideAuthorisationServiceMock.Auth.succeeds(GatekeeperRoles.USER)
       ApmServiceMock.FetchApi.returnsSingleApi(serviceName)
+      TpaServiceMock.FetchAllApplications.returnsData()
 
       val result = controller.page(serviceName)(fakeRequest)
       contentType(result) shouldBe Some("text/html")
