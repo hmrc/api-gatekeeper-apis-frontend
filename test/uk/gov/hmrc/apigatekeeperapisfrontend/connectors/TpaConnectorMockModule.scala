@@ -20,12 +20,11 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apigatekeeperapisfrontend.models.TempApplication
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
-import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.RateLimitTier.BRONZE
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaboratorsFixtures
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApiContext
 
-trait TpaConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar with ApiDataTestData {
+trait TpaConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar with ApiDataTestData with ApplicationWithCollaboratorsFixtures {
 
   trait BaseTpaConnectorMock {
     def aMock: ThirdPartyApplicationConnector
@@ -33,7 +32,7 @@ trait TpaConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar wit
     object FetchAllApplications {
 
       def returnsData() = {
-        when(aMock.fetchAllApplications(*[ApiContext])(*)).thenReturn(Future.successful(List(TempApplication(BRONZE))))
+        when(aMock.fetchAllApplications(*[ApiContext])(*)).thenReturn(Future.successful(List(standardApp)))
       }
     }
 

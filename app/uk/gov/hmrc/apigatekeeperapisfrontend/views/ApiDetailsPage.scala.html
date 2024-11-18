@@ -19,25 +19,25 @@
 @import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.breadcrumbs.BreadcrumbsItem
 @import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
-@import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.CoreApplication
 @import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.RateLimitTier
 @import uk.gov.hmrc.apigatekeeperapisfrontend.models.TempApplication
+@import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
 
 @import java.time.format.DateTimeFormatter
 @import java.time.ZoneId
 
 @this(layout: Layout, govukTable: GovukTable, govukDetails: GovukDetails)
 
-@(api: Locator[ApiDefinition], apps: List[TempApplication])(implicit request: LoggedInRequest[_])
+@(api: Locator[ApiDefinition], apps: List[ApplicationWithCollaborators])(implicit request: LoggedInRequest[_])
 
 @mdtpLink = {
     <a href="https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get">
         https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get
     </a>
 }
-@tpc(apps: List[TempApplication])={
+@tpc(apps: List[ApplicationWithCollaborators])={
   <div>
-    @apps.map(app => app.rateLimitTier match {
+    @apps.map(app => app.details.rateLimitTier match {
     case RateLimitTier.BRONZE => 3
     case RateLimitTier.SILVER => 9
     case RateLimitTier.GOLD => 17

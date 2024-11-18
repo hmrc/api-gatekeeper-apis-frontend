@@ -21,9 +21,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.TpaConnectorMockModule
-import uk.gov.hmrc.apigatekeeperapisfrontend.models.TempApplication
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDataTestData, AsyncHmrcSpec}
-import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.RateLimitTier.BRONZE
 
 class ThirdPartyApplicationServiceSpec extends AsyncHmrcSpec {
 
@@ -36,7 +34,7 @@ class ThirdPartyApplicationServiceSpec extends AsyncHmrcSpec {
     "pass back the list it gets" in new Setup {
       TpaConnectorMock.FetchAllApplications.returnsData()
       val result = await(service.fetchAllApplications(defaultContext))
-      result shouldBe List(TempApplication(BRONZE))
+      result shouldBe List(standardApp)
     }
   }
 }

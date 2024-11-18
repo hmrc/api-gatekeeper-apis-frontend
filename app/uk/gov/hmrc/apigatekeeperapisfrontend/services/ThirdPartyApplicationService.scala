@@ -22,12 +22,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ThirdPartyApplicationConnector
-import uk.gov.hmrc.apigatekeeperapisfrontend.models.TempApplication
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApiContext
 
 class ThirdPartyApplicationService @Inject() (connector: ThirdPartyApplicationConnector)(implicit ec: ExecutionContext) {
 
-  def fetchAllApplications(apiContext: ApiContext)(implicit hc: HeaderCarrier): Future[List[TempApplication]] = {
+  def fetchAllApplications(apiContext: ApiContext)(implicit hc: HeaderCarrier): Future[List[ApplicationWithCollaborators]] = {
     connector.fetchAllApplications(apiContext)
   }
 }

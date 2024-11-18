@@ -27,8 +27,9 @@ import play.api.{Application, Configuration, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaboratorsFixtures
 
-class ThirdPartyApplicationConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with ApiDataTestData {
+class ThirdPartyApplicationConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with ApiDataTestData with ApplicationWithCollaboratorsFixtures {
 
   private val stubConfig = Configuration(
     "microservice.services.third-party-application.port" -> stubPort,
@@ -52,11 +53,11 @@ class ThirdPartyApplicationConnectorISpec extends BaseConnectorIntegrationSpec w
       stubFor(WireMock.get(urlEqualTo(url))
         .willReturn(aResponse()
           .withStatus(OK)
-          .withBody(Json.toJson(List(defaultTinyApplication)).toString())))
+          .withBody(Json.toJson(List(standardApp)).toString())))
 
       val result = await(connector.fetchAllApplications(defaultContext))
 
-      result shouldBe List(defaultTinyApplication)
+      result shouldBe List(standardApp)
     }
   }
 
