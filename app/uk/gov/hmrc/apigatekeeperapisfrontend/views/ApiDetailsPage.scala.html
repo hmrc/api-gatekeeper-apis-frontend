@@ -19,18 +19,32 @@
 @import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.breadcrumbs.BreadcrumbsItem
 @import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes
+@import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.RateLimitTier
+@import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
 
 @import java.time.format.DateTimeFormatter
 @import java.time.ZoneId
 
-@this(layout: Layout, govukTable: GovukTable)
+@this(layout: Layout, govukTable: GovukTable, govukDetails: GovukDetails)
 
-@(api: Locator[ApiDefinition])(implicit request: LoggedInRequest[_])
+@(api: Locator[ApiDefinition], apps: List[ApplicationWithCollaborators])(implicit request: LoggedInRequest[_])
 
 @mdtpLink = {
     <a href="https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get">
         https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get
     </a>
+}
+@tpc(apps: List[ApplicationWithCollaborators])={
+  <div>
+    @apps.map(app => app.details.rateLimitTier match {
+    case RateLimitTier.BRONZE => 3
+    case RateLimitTier.SILVER => 9
+    case RateLimitTier.GOLD => 17
+    case RateLimitTier.PLATINUM => 84
+    case RateLimitTier.RHODIUM => 167
+    }).sum.toString
+      calls per second in production
+  </div>
 }
 
 @layout(pageTitle = Some(s"API Details - ${api.production.orElse(api.sandbox).map(_.name).get}"), breadcrumbs = Seq(
@@ -47,6 +61,8 @@
                 Seq(TableRow(content = Text("Context")), TableRow(content = Text(api.production.orElse(api.sandbox).map(_.context).map(_.toString).get))),
                 Seq(TableRow(content = Text("MDTP repository page")), TableRow(content = HtmlContent(mdtpLink))),
                 Seq(TableRow(content = Text("Versions of this API")), TableRow(content = Text((api.sandbox.map(_.versionsAsList).map(_.length).getOrElse(0) + api.production.map(_.versionsAsList).map(_.length).getOrElse(0)).toString))),
+                Seq(TableRow(content = Text("Total Provisioned Capacity")), TableRow(content = HtmlContent(tpc(apps)))),
+
             ),
             caption = api.production.orElse(api.sandbox).map(_.name),
             captionClasses = "govuk-table__caption--l",

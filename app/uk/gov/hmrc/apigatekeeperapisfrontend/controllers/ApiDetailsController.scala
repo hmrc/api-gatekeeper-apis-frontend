@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
-import play.api.data.Form
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.actions.GatekeeperRoleActions
-import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService
+import uk.gov.hmrc.apigatekeeperapisfrontend.services.{ApmService, ThirdPartyApplicationService}
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html._
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
@@ -38,16 +37,19 @@ class ApiDetailsController @Inject() (
     apiDetailsPage: ApiDetailsPage,
     apiEventsPage: ApiEventsPage,
     errorTemplate: ErrorTemplate,
-    apmService: ApmService
+    apmService: ApmService,
+    tpaService: ThirdPartyApplicationService
   )(implicit override val ec: ExecutionContext
   ) extends GatekeeperBaseController(strideAuthorisationService, mcc) with GatekeeperRoleActions {
 
   def page(serviceName: ServiceName): Action[AnyContent] = loggedInOnly() { implicit request =>
     apmService
       .fetchApi(serviceName)
-      .map {
-        case Some(defs) => Ok(apiDetailsPage(defs))
-        case None       => NotFound(errorTemplate("API Not Found", "API Not Found", s"The api ${serviceName} hasn't been found in either environment"))
+      .flatMap {
+        case Some(defs) =>
+          val definition = defs.production.orElse(defs.sandbox).get
+          tpaService.fetchAllApplications(definition.context).map(apps => Ok(apiDetailsPage(defs, apps)))
+        case None       => Future.successful(NotFound(errorTemplate("API Not Found", "API Not Found", s"The api ${serviceName} hasn't been found in either environment")))
       }
   }
 
