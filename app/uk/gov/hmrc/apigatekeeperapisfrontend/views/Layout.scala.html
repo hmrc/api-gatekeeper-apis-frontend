@@ -26,7 +26,7 @@
         hmrcScripts: HmrcScripts
 )
 
-@(pageTitle: Option[String] = None, breadcrumbs: Seq[BreadcrumbsItem] = Seq.empty)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(pageTitle: Option[String] = None, breadcrumbs: Seq[BreadcrumbsItem] = Seq.empty)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @scriptElem = {
 @hmrcScripts()
