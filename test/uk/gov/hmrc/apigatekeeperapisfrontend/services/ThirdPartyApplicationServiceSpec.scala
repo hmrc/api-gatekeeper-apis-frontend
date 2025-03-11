@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.TpaConnectorMockModule

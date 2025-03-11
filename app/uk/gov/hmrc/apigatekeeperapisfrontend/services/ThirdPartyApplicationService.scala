@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -25,7 +25,7 @@ import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ThirdPartyApplicationCon
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApiContext
 
-class ThirdPartyApplicationService @Inject() (connector: ThirdPartyApplicationConnector)(implicit ec: ExecutionContext) {
+class ThirdPartyApplicationService @Inject() (connector: ThirdPartyApplicationConnector) {
 
   def fetchAllApplications(apiContext: ApiContext)(implicit hc: HeaderCarrier): Future[List[ApplicationWithCollaborators]] = {
     connector.fetchAllApplications(apiContext)
