@@ -3,9 +3,8 @@ import sbt.*
 object AppDependencies {
 
   private val bootstrapVersion = "9.19.0"
-  val apiDomainVersion         = "0.19.1"
-  val commonDomainVersion      = "0.18.0"
-  val appDomainVersion         = "0.82.0"
+  val apiDomainVersion         = "0.20.0"
+  val appDomainVersion         = "0.87.0"
 
   private val playfrontendVersion = "12.6.0"
   val compile = Seq(
