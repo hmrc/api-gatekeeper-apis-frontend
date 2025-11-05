@@ -30,7 +30,7 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApiContext
 class ThirdPartyApplicationConnector @Inject() (http: HttpClientV2, config: ThirdPartyApplicationConnector.Config)(implicit ec: ExecutionContext) {
 
   def fetchAllApplications(apiContext: ApiContext)(implicit hc: HeaderCarrier): Future[List[ApplicationWithCollaborators]] = {
-    http.get(url"${config.serviceBaseUrl}/application?subscribesTo=$apiContext")
+    http.get(url"${config.serviceBaseUrl}/query?context=$apiContext")
       .execute[List[ApplicationWithCollaborators]]
   }
 
