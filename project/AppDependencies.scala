@@ -2,11 +2,11 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "9.19.0"
-  val apiDomainVersion         = "0.20.0"
-  val appDomainVersion         = "0.87.0"
-
+  private val bootstrapVersion    = "9.19.0"
+  private val apiDomainVersion    = "0.20.0"
+  private val appDomainVersion    = "0.90.0"
   private val playfrontendVersion = "12.6.0"
+
   val compile = Seq(
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30"      % bootstrapVersion,
     "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"      % playfrontendVersion,

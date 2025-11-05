@@ -48,7 +48,7 @@ class ThirdPartyApplicationConnectorISpec extends BaseConnectorIntegrationSpec w
   }
 
   "fetch api list" should {
-    val url = s"/application?subscribesTo=${defaultContext.value}"
+    val url = s"/query?context=${defaultContext}"
     "fetch all applications" in new Setup {
       stubFor(WireMock.get(urlEqualTo(url))
         .willReturn(aResponse()
