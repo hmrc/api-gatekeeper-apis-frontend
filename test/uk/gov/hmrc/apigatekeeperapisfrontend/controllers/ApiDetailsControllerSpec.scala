@@ -165,8 +165,20 @@ class ApiDetailsControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       ApmServiceMock.FetchApi.returnsSingleApi(serviceName)
       ApmServiceMock.FetchApiEvents.returnsEvent(serviceName, includeNoChange = false)
 
-      val request = FakeRequest("GET", "/api-details/fish/events")
-        .withFormUrlEncodedBody("includeNoChange" -> "false")
+      val request = FakeRequest("GET", "/api-details/fish/events?includeNoChange=false")
+
+      val result = controller.events(serviceName)(request)
+      contentType(result) shouldBe Some("text/html")
+      charset(result) shouldBe Some("utf-8")
+      contentAsString(result) should include("API Version Change")
+    }
+
+    "return list of events, including no change events" in new Setup {
+      StrideAuthorisationServiceMock.Auth.succeeds(GatekeeperRoles.USER)
+      ApmServiceMock.FetchApi.returnsSingleApi(serviceName)
+      ApmServiceMock.FetchApiEvents.returnsEvent(serviceName, includeNoChange = true)
+
+      val request = FakeRequest("GET", "/api-details/fish/events?includeNoChange=true")
 
       val result = controller.events(serviceName)(request)
       contentType(result) shouldBe Some("text/html")
