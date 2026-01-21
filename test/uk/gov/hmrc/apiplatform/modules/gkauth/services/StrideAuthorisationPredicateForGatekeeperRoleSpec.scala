@@ -23,7 +23,7 @@ import uk.gov.hmrc.apiplatform.modules.gkauth.config.StrideAuthRoles
 import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.GatekeeperRoles
 
 class StrideAuthorisationPredicateForGatekeeperRoleSpec extends AsyncHmrcSpec {
-  val roles = StrideAuthRoles("admin", "super", "user")
+  val roles = StrideAuthRoles("admin", "super", "advanced", "user")
 
   import roles._
 
@@ -43,7 +43,7 @@ class StrideAuthorisationPredicateForGatekeeperRoleSpec extends AsyncHmrcSpec {
     "contain admin, super user and user roles when looking for GK.USER" in {
       val predicate = StrideAuthorisationPredicateForGatekeeperRole(roles)(GatekeeperRoles.USER)
 
-      predicate shouldBe (Enrolment(adminRole) or Enrolment(superUserRole) or Enrolment(userRole))
+      predicate shouldBe (Enrolment(adminRole) or Enrolment(superUserRole) or Enrolment(advancedUserRole) or Enrolment(userRole))
     }
   }
 }
