@@ -32,7 +32,11 @@ case class ApiDefinitionView(
     access: ApiAccessType,
     isTrial: Boolean,
     environment: Environment,
-    lastPublishedAt: Option[Instant]
+    lastPublishedAt: Option[Instant],
+    openEndpoints: Int,
+    appEndpoints: Int,
+    userEndpoints: Int,
+    totalEndpoints: Int
   )
 
 object CsvHelper {
