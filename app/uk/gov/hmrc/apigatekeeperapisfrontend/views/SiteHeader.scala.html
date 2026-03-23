@@ -14,27 +14,23 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
 @import uk.gov.hmrc.apigatekeeperapisfrontend.config.GatekeeperConfig
 
 @this(
-  hmrcStandardHeader: HmrcStandardHeader,
-  gatekeeperConfig: GatekeeperConfig
+        hmrcStandardHeader: HmrcStandardHeader,
+        gatekeeperConfig: GatekeeperConfig
 )
 
 @()(implicit messages: Messages, requestHeader: RequestHeader)
 
 @navigation = @{
-  Seq(
-      ServiceNavigationItem(content = Text("APIs"), href = uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes.ApiListController.page.url),
-      ServiceNavigationItem(content = Text("Applications"), href = gatekeeperConfig.applicationsPageUri),
-      ServiceNavigationItem(content = Text("Developers"), href = gatekeeperConfig.developersPageUri),
-      ServiceNavigationItem(content = Text("Terms of use"), href = gatekeeperConfig.termsOfUsePageUri),
-      ServiceNavigationItem(content = Text("Email"), href = gatekeeperConfig.emailsPageUri),
-      ServiceNavigationItem(content = Text("API Approvals"), href = gatekeeperConfig.pendingUri),
-      ServiceNavigationItem(content = Text("XML"), href = gatekeeperConfig.xmlUri)
-  )
+    Seq(
+        ServiceNavigationItem(content = Text("APIs"), href = uk.gov.hmrc.apigatekeeperapisfrontend.controllers.routes.ApiListController.page.url),
+        ServiceNavigationItem(content = Text("Applications"), href = gatekeeperConfig.applicationsPageUri),
+        ServiceNavigationItem(content = Text("Developers"), href = gatekeeperConfig.developersPageUri),
+        ServiceNavigationItem(content = Text("XML vendors"), href = gatekeeperConfig.xmlUri),
+        ServiceNavigationItem(content = Text("Email"), href = gatekeeperConfig.emailsPageUri)
+    )
 }
 
 @hmrcStandardHeader(

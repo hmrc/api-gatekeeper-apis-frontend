@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.LoggedInRequest
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
+@import uk.gov.hmrc.apigatekeeperapisfrontend.config.GatekeeperConfig
 
 @this(
         govukLayout: GovukLayout,
@@ -23,8 +24,10 @@
         hmrcFooter: HmrcFooter,
         hmrcHead: HmrcHead,
         govukBreadcrumbs: GovukBreadcrumbs,
-        hmrcScripts: HmrcScripts
+        hmrcScripts: HmrcScripts,
+        gatekeeperConfig: GatekeeperConfig
 )
+
 
 @(pageTitle: Option[String] = None, breadcrumbs: Seq[BreadcrumbsItem] = Seq.empty)(contentBlock: Html)(implicit requestHeader: RequestHeader, messages: Messages)
 
@@ -45,7 +48,20 @@
     </div>
 }
 
+@submenu = {
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <ul class="govuk-pagination__list">
+                <li class="govuk-pagination__item">APIs</li>
+                <li class="govuk-pagination__item"><a class="govuk-link govuk-link--no-visited-state" href="@gatekeeperConfig.pendingUri">API approvals</a></li>
+            </ul>
+        </div>
+    </div>
+    <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible">
+}
+
 @beforeContentAndUser = {
+    @submenu
     <div style="display: flex;
         justify-content: space-between;
         align-items: center;">
