@@ -26,6 +26,7 @@ import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.CsvHelper.ColumnDefinition
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDefinitionView, CsvHelper}
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.ApiListPage
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.AuthType.{APPLICATION, NONE, USER}
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
@@ -67,7 +68,11 @@ class ApiListController @Inject() (
       ColumnDefinition("access", defView => defView.access.displayText),
       ColumnDefinition("isTrial", defView => defView.isTrial.toString),
       ColumnDefinition("environment", defView => defView.environment.displayText),
-      ColumnDefinition("lastPublishedAt", defView => defView.lastPublishedAt.map(_.toString).getOrElse(""))
+      ColumnDefinition("lastPublishedAt", defView => defView.lastPublishedAt.map(_.toString).getOrElse("")),
+      ColumnDefinition("openEndpoints", defView => defView.openEndpoints.toString),
+      ColumnDefinition("appEndpoints", defView => defView.appEndpoints.toString),
+      ColumnDefinition("userEndpoints", defView => defView.userEndpoints.toString),
+      ColumnDefinition("totalEndpoints", defView => defView.totalEndpoints.toString)
     )
 
     apmService
@@ -85,7 +90,11 @@ class ApiListController @Inject() (
               v.access.accessType,
               isTrial(v),
               Environment.SANDBOX,
-              apiDef.lastPublishedAt
+              apiDef.lastPublishedAt,
+              v.endpoints.count(e => e.authType == NONE),
+              v.endpoints.count(e => e.authType == APPLICATION),
+              v.endpoints.count(e => e.authType == USER),
+              v.endpoints.length
             )
           )
         ) ++ container.production.flatMap(apiDef =>
@@ -100,7 +109,11 @@ class ApiListController @Inject() (
               v.access.accessType,
               isTrial(v),
               Environment.PRODUCTION,
-              apiDef.lastPublishedAt
+              apiDef.lastPublishedAt,
+              v.endpoints.count(e => e.authType == NONE),
+              v.endpoints.count(e => e.authType == APPLICATION),
+              v.endpoints.count(e => e.authType == USER),
+              v.endpoints.length
             )
           )
         )

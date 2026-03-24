@@ -32,7 +32,11 @@ case class ApiDefinitionView(
     access: ApiAccessType,
     isTrial: Boolean,
     environment: Environment,
-    lastPublishedAt: Option[Instant]
+    lastPublishedAt: Option[Instant],
+    openEndpoints: Int,
+    appEndpoints: Int,
+    userEndpoints: Int,
+    totalEndpoints: Int
   )
 
 object CsvHelper {
@@ -46,7 +50,7 @@ object CsvHelper {
     val format = CSVFormat.RFC4180.builder
       .setHeader(headers: _*)
       .setRecordSeparator(System.lineSeparator())
-      .build()
+      .get()
 
     val output  = new StringWriter()
     val printer = new CSVPrinter(output, format)
