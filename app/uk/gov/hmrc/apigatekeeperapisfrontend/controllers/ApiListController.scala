@@ -27,7 +27,6 @@ import uk.gov.hmrc.apigatekeeperapisfrontend.utils.CsvHelper.ColumnDefinition
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDefinitionView, CsvHelper}
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.ApiListPage
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models.AuthType.{APPLICATION, NONE, USER}
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationService, StrideAuthorisationService}
@@ -50,13 +49,6 @@ class ApiListController @Inject() (
 
   }
 
-  private def isTrial(apiVersion: ApiVersion): Boolean = {
-    apiVersion.access match {
-      case ApiAccess.Private(true) => true
-      case _                       => false
-    }
-  }
-
   val csv: Action[AnyContent] = loggedInOnly() { implicit request =>
     val columnDefinitions: Seq[ColumnDefinition[ApiDefinitionView]] = Seq(
       ColumnDefinition("name", defView => defView.name),
@@ -66,7 +58,6 @@ class ApiListController @Inject() (
       ColumnDefinition("source", defView => defView.versionSource.toString),
       ColumnDefinition("status", defView => defView.status.toString),
       ColumnDefinition("access", defView => defView.access.displayText),
-      ColumnDefinition("isTrial", defView => defView.isTrial.toString),
       ColumnDefinition("environment", defView => defView.environment.displayText),
       ColumnDefinition("lastPublishedAt", defView => defView.lastPublishedAt.map(_.toString).getOrElse("")),
       ColumnDefinition("openEndpoints", defView => defView.openEndpoints.toString),
@@ -87,8 +78,7 @@ class ApiListController @Inject() (
               v.versionNbr,
               v.versionSource,
               v.status,
-              v.access.accessType,
-              isTrial(v),
+              v.access,
               Environment.SANDBOX,
               apiDef.lastPublishedAt,
               v.endpoints.count(e => e.authType == NONE),
@@ -106,8 +96,7 @@ class ApiListController @Inject() (
               v.versionNbr,
               v.versionSource,
               v.status,
-              v.access.accessType,
-              isTrial(v),
+              v.access,
               Environment.PRODUCTION,
               apiDef.lastPublishedAt,
               v.endpoints.count(e => e.authType == NONE),

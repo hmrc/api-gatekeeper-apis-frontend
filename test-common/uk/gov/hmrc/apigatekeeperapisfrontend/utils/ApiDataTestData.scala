@@ -37,7 +37,7 @@ trait ApiDataTestData extends FixedClock {
     name = "Hello World",
     description = "This is a test api",
     context = defaultContext,
-    versions = Map(defaultVersion -> ApiVersion(defaultVersion, ApiStatus.STABLE, ApiAccess.PUBLIC, List(), true, None, ApiVersionSource.OAS)),
+    versions = Map(defaultVersion -> ApiVersion(defaultVersion, ApiStatus.STABLE, ApiAccessType.PUBLIC, List(), true, None, ApiVersionSource.OAS)),
     isTestSupport = false,
     lastPublishedAt = Some(defaultPublish),
     categories = List(ApiCategory.OTHER)
