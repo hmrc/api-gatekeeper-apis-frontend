@@ -78,7 +78,6 @@
                 HeadCell(content = Text("Environment"), classes = "govuk-table__header"),
                 HeadCell(content = Text("Status"), classes = "govuk-table__header"),
                 HeadCell(content = Text("Access"), classes = "govuk-table__header"),
-                HeadCell(content = Text("Trial"), classes = "govuk-table__header"),
                 HeadCell(content = Text("Source"), classes = "govuk-table__header"),
             )),
             rows = api.sandbox.map(_.versionsAsList).getOrElse(List.empty).sorted.map(version => Seq(
@@ -86,14 +85,12 @@
                 TableRow(content = Text(Environment.SANDBOX.displayText)),
                 TableRow(content = Text(version.status.displayText)),
                 TableRow(content = Text(version.access.displayText)),
-                TableRow(content = Text(version.access.equals(ApiAccess.Private(true)).toString)),
                 TableRow(content = Text(version.versionSource.toString)),
             )) ++ api.production.map(_.versionsAsList).getOrElse(List.empty).sorted.map(version => Seq(
                 TableRow(content = Text(version.versionNbr.toString())),
                 TableRow(content = Text(Environment.PRODUCTION.displayText)),
                 TableRow(content = Text(version.status.displayText)),
                 TableRow(content = Text(version.access.displayText)),
-                TableRow(content = Text(version.access.equals(ApiAccess.Private(true)).toString)),
                 TableRow(content = Text(version.versionSource.toString)),
             )),
             caption = Some("Version details"),

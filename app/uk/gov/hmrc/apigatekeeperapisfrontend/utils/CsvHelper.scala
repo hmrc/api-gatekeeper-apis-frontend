@@ -30,7 +30,6 @@ case class ApiDefinitionView(
     versionSource: ApiVersionSource,
     status: ApiStatus,
     access: ApiAccessType,
-    isTrial: Boolean,
     environment: Environment,
     lastPublishedAt: Option[Instant],
     openEndpoints: Int,
