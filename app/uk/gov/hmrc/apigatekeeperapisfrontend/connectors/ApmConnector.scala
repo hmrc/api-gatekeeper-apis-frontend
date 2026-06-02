@@ -20,20 +20,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.libs.json.OFormat
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
-import uk.gov.hmrc.apiplatform.modules.common.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.*
 
 @Singleton
 class ApmConnector @Inject() (http: HttpClientV2, config: ApmConnector.Config)(implicit ec: ExecutionContext) {
 
   def fetchAllApis(env: Environment)(implicit hc: HeaderCarrier): Future[List[ApiDefinition]] = {
     http.get(url"${config.serviceBaseUrl}/api-definitions/all?environment=$env").execute[MappedApiDefinitions]
-      .map(_.wrapped.values.toList)
+      .map(_.values.toList)
   }
 
   def fetchApi(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[Option[Locator[ApiDefinition]]] = {

@@ -27,7 +27,7 @@
 
 @this(layout: Layout, govukTable: GovukTable, govukDetails: GovukDetails)
 
-@(api: Locator[ApiDefinition], apps: List[ApplicationWithCollaborators])(implicit request: LoggedInRequest[_])
+@(api: Locator[ApiDefinition], apps: List[ApplicationWithCollaborators])(implicit request:  LoggedInRequest[?])
 
 @mdtpLink = {
     <a href="https://catalogue.tax.service.gov.uk/repositories/@api.production.orElse(api.sandbox).map(_.serviceName).get">
@@ -37,13 +37,13 @@
 @tpc(apps: List[ApplicationWithCollaborators])={
   <div>
     @apps.map(app => app.details.rateLimitTier match {
-    case RateLimitTier.COPPER => 1
-    case RateLimitTier.BRONZE => 3
-    case RateLimitTier.SILVER => 9
-    case RateLimitTier.GOLD => 17
-    case RateLimitTier.PALLADIUM => 40
-    case RateLimitTier.PLATINUM => 84
-    case RateLimitTier.RHODIUM => 167
+    case RateLimitTier.Copper => 1
+    case RateLimitTier.Bronze => 3
+    case RateLimitTier.Silver => 9
+    case RateLimitTier.Gold => 17
+    case RateLimitTier.Palladium => 40
+    case RateLimitTier.Platinum => 84
+    case RateLimitTier.Rhodium => 167
     }).sum.toString
       calls per second in production
   </div>
@@ -84,15 +84,15 @@
             )),
             rows = api.sandbox.map(_.versionsAsList).getOrElse(List.empty).sorted.map(version => Seq(
                 TableRow(content = Text(version.versionNbr.toString())),
-                TableRow(content = Text(Environment.SANDBOX.displayText)),
-                TableRow(content = Text(version.status.displayText)),
-                TableRow(content = Text(version.access.displayText)),
+                TableRow(content = Text(Environment.Sandbox.displayText)),
+                TableRow(content = Text(version.status.toString)),
+                TableRow(content = Text(version.access.toString)),
                 TableRow(content = Text(version.versionSource.toString)),
             )) ++ api.production.map(_.versionsAsList).getOrElse(List.empty).sorted.map(version => Seq(
                 TableRow(content = Text(version.versionNbr.toString())),
-                TableRow(content = Text(Environment.PRODUCTION.displayText)),
-                TableRow(content = Text(version.status.displayText)),
-                TableRow(content = Text(version.access.displayText)),
+                TableRow(content = Text(Environment.Production.displayText)),
+                TableRow(content = Text(version.status.toString)),
+                TableRow(content = Text(version.access.toString)),
                 TableRow(content = Text(version.versionSource.toString)),
             )),
             caption = Some("Version details"),

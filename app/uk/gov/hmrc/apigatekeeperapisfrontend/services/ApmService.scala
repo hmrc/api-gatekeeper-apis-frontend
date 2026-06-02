@@ -23,15 +23,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.connectors.ApmConnector
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.{DisplayApiEvent, EnvironmentDefinitions}
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 
 class ApmService @Inject() (apmConnector: ApmConnector)(implicit ec: ExecutionContext) {
 
   def fetchAllApis()(implicit hc: HeaderCarrier): Future[EnvironmentDefinitions] = {
     for {
-      sandboxApis <- apmConnector.fetchAllApis(Environment.SANDBOX)
-      prodApis    <- apmConnector.fetchAllApis(Environment.PRODUCTION)
+      sandboxApis <- apmConnector.fetchAllApis(Environment.Sandbox)
+      prodApis    <- apmConnector.fetchAllApis(Environment.Production)
     } yield EnvironmentDefinitions(sandboxApis, prodApis)
   }
 
