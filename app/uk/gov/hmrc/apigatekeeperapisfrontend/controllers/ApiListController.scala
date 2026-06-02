@@ -26,7 +26,7 @@ import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmService
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.CsvHelper.ColumnDefinition
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.{ApiDefinitionView, CsvHelper}
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.ApiListPage
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models.AuthType.{APPLICATION, NONE, USER}
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.AuthType
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationService, StrideAuthorisationService}
@@ -52,12 +52,12 @@ class ApiListController @Inject() (
   val csv: Action[AnyContent] = loggedInOnly() { implicit request =>
     val columnDefinitions: Seq[ColumnDefinition[ApiDefinitionView]] = Seq(
       ColumnDefinition("name", defView => defView.name),
-      ColumnDefinition("serviceName", defView => defView.serviceName.value),
+      ColumnDefinition("serviceName", defView => defView.serviceName),
       ColumnDefinition("context", defView => defView.context.value),
       ColumnDefinition("version", defView => defView.versionNbr.value),
       ColumnDefinition("source", defView => defView.versionSource.toString),
       ColumnDefinition("status", defView => defView.status.toString),
-      ColumnDefinition("access", defView => defView.access.displayText),
+      ColumnDefinition("access", defView => defView.access.toString),
       ColumnDefinition("environment", defView => defView.environment.displayText),
       ColumnDefinition("lastPublishedAt", defView => defView.lastPublishedAt.map(_.toString).getOrElse("")),
       ColumnDefinition("openEndpoints", defView => defView.openEndpoints.toString),
@@ -79,11 +79,11 @@ class ApiListController @Inject() (
               v.versionSource,
               v.status,
               v.access,
-              Environment.SANDBOX,
+              Environment.Sandbox,
               apiDef.lastPublishedAt,
-              v.endpoints.count(e => e.authType == NONE),
-              v.endpoints.count(e => e.authType == APPLICATION),
-              v.endpoints.count(e => e.authType == USER),
+              v.endpoints.count(e => e.authType == AuthType.None),
+              v.endpoints.count(e => e.authType == AuthType.Application),
+              v.endpoints.count(e => e.authType == AuthType.User),
               v.endpoints.length
             )
           )
@@ -97,11 +97,11 @@ class ApiListController @Inject() (
               v.versionSource,
               v.status,
               v.access,
-              Environment.PRODUCTION,
+              Environment.Production,
               apiDef.lastPublishedAt,
-              v.endpoints.count(e => e.authType == NONE),
-              v.endpoints.count(e => e.authType == APPLICATION),
-              v.endpoints.count(e => e.authType == USER),
+              v.endpoints.count(e => e.authType == AuthType.None),
+              v.endpoints.count(e => e.authType == AuthType.Application),
+              v.endpoints.count(e => e.authType == AuthType.User),
               v.endpoints.length
             )
           )

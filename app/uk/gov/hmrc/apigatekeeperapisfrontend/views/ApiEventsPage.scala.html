@@ -27,7 +27,7 @@
 
 @this(layout: Layout, govukTable: GovukTable)
 
-@(apiName: String,serviceName: ServiceName, events: List[DisplayApiEvent], form: Form[EventFiltersForm])(implicit request: LoggedInRequest[_])
+@(apiName: String,serviceName: ServiceName, events: List[DisplayApiEvent], form: Form[EventFiltersForm])(implicit request:  LoggedInRequest[?])
 
 @eventDetails(eventType: String, metadata:List[String])={
   <p class="govuk-!-margin-top-0">

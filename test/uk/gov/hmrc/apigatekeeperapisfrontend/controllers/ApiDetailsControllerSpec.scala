@@ -18,7 +18,6 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.Application
@@ -26,12 +25,12 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.services.{ApmServiceMockModule, TpaServiceMockModule}
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.AsyncHmrcSpec
 import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.{ApiDetailsPage, ApiEventsPage, ErrorTemplate}
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.gkauth.domain.models.GatekeeperRoles
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationServiceMockModule, StrideAuthorisationServiceMockModule}
 
@@ -45,9 +44,8 @@ class ApiDetailsControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       )
       .build()
 
-  trait Setup extends MockitoSugar
-      with ArgumentMatchersSugar
-      with StrideAuthorisationServiceMockModule
+  trait Setup
+      extends StrideAuthorisationServiceMockModule
       with LdapAuthorisationServiceMockModule
       with ApmServiceMockModule
       with TpaServiceMockModule {

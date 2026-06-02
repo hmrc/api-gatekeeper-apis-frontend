@@ -19,7 +19,7 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.utils
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import uk.gov.hmrc.apigatekeeperapisfrontend.utils.CsvHelper._
+import uk.gov.hmrc.apigatekeeperapisfrontend.utils.CsvHelper.*
 
 class CsvHelperSpec extends AnyWordSpec with Matchers {
   "CsvHelper" should {

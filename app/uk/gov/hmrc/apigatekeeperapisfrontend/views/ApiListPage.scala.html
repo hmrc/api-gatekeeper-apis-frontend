@@ -22,7 +22,7 @@
 
 @this(layout: Layout, govukTable: GovukTable)
 
-@(apis: List[ApiDefinition])(implicit request: LoggedInRequest[_])
+@(apis: List[ApiDefinition])(implicit request:  LoggedInRequest[?])
 
 @linkToDetails(data: ApiDefinition) = {
     <a href="@routes.ApiDetailsController.page(data.serviceName)">@{data.name}</a>

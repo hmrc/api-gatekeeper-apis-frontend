@@ -18,7 +18,6 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.Application
@@ -26,7 +25,7 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.services.ApmServiceMockModule
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.AsyncHmrcSpec
@@ -44,7 +43,7 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       )
       .build()
 
-  trait Setup extends MockitoSugar with ArgumentMatchersSugar with StrideAuthorisationServiceMockModule with LdapAuthorisationServiceMockModule with ApmServiceMockModule {
+  trait Setup extends StrideAuthorisationServiceMockModule with LdapAuthorisationServiceMockModule with ApmServiceMockModule {
     val page = app.injector.instanceOf[ApiListPage]
     val mcc  = app.injector.instanceOf[MessagesControllerComponents]
 
@@ -116,8 +115,8 @@ class ApiListControllerSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
       contentType(result) shouldBe Some("text/csv")
       contentAsString(result) shouldBe
         """name,serviceName,context,version,source,status,access,environment,lastPublishedAt,openEndpoints,appEndpoints,userEndpoints,totalEndpoints
-          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,Sandbox,2022-10-12T19:00:00Z,0,0,0,0
-          |Hello World,helloworld,test/hello,1.0,OAS,STABLE,Public,Production,2022-10-12T19:00:00Z,0,0,0,0
+          |Hello World,helloworld,test/hello,1.0,OAS,Stable,Public,Sandbox,2022-10-12T19:00:00Z,0,0,0,0
+          |Hello World,helloworld,test/hello,1.0,OAS,Stable,Public,Production,2022-10-12T19:00:00Z,0,0,0,0
           |""".stripMargin
     }
 

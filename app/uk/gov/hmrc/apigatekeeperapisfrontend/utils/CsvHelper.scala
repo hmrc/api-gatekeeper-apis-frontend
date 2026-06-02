@@ -47,7 +47,7 @@ object CsvHelper {
     val headers: Seq[String] = csvColumnDefinitions.map(_.name)
 
     val format = CSVFormat.RFC4180.builder
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .setRecordSeparator(System.lineSeparator())
       .get()
 
@@ -58,7 +58,7 @@ object CsvHelper {
       csvColumnDefinitions.map(_.getValue(dataItem))
     }
 
-    data.foreach(row => printer.printRecord(getCsvRowValues(row): _*))
+    data.foreach(row => printer.printRecord(getCsvRowValues(row)*))
 
     output.getBuffer.toString
   }

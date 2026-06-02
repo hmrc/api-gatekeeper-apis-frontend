@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor, *}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.http.Status.OK
@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.DisplayApiEvent
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 
 class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPerSuite with ApiDataTestData {
@@ -50,14 +50,15 @@ class ApmConnectorISpec extends BaseConnectorIntegrationSpec with GuiceOneAppPer
   }
 
   "fetch api list" should {
-    val url = "/api-definitions/all?environment=SANDBOX"
+    val url = "/api-definitions/all"
     "fetch all apis" in new Setup {
-      stubFor(WireMock.get(urlEqualTo(url))
+      stubFor(WireMock.get(urlPathEqualTo(url))
+        .withQueryParam("environment", equalToIgnoreCase("SANDBOX"))
         .willReturn(aResponse()
           .withStatus(OK)
           .withBody(Json.toJson(List(defaultApiDefinition).map(d => d.context -> d).toMap).toString())))
 
-      val result = await(connector.fetchAllApis(Environment.SANDBOX))
+      val result = await(connector.fetchAllApis(Environment.Sandbox))
 
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }

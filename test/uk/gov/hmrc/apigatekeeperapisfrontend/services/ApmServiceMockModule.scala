@@ -18,13 +18,15 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
 import scala.concurrent.Future
 
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.mockito.ArgumentMatchers.{any as `*`, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.models.EnvironmentDefinitions
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 
-trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
+trait ApmServiceMockModule extends MockitoSugar {
 
   trait BaseApmServiceMock extends ApiDataTestData {
     def aMock: ApmService
@@ -32,29 +34,29 @@ trait ApmServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
     object FetchAllApis {
 
       def returnsData() = {
-        when(aMock.fetchAllApis()(*)).thenReturn(Future.successful(EnvironmentDefinitions(List(defaultApiDefinition), List(defaultApiDefinition))))
+        when(aMock.fetchAllApis()(using *)).thenReturn(Future.successful(EnvironmentDefinitions(List(defaultApiDefinition), List(defaultApiDefinition))))
       }
     }
 
     object FetchApi {
 
       def returnsSingleApi(serviceName: ServiceName) = {
-        when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(Some(Locator.Production(defaultApiDefinition))))
+        when(aMock.fetchApi(eqTo(serviceName))(using *)).thenReturn(Future.successful(Some(Locator.Production(defaultApiDefinition))))
       }
 
       def returnsNoSingleApi(serviceName: ServiceName) = {
-        when(aMock.fetchApi(eqTo(serviceName))(*)).thenReturn(Future.successful(None))
+        when(aMock.fetchApi(eqTo(serviceName))(using *)).thenReturn(Future.successful(None))
       }
     }
 
     object FetchApiEvents {
 
       def returnsEvent(serviceName: ServiceName, includeNoChange: Boolean = true) = {
-        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(includeNoChange))(*)).thenReturn(Future.successful(List(defaultEvent)))
+        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(includeNoChange))(using *)).thenReturn(Future.successful(List(defaultEvent)))
       }
 
       def returnsNoEvents(serviceName: ServiceName) = {
-        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(true))(*)).thenReturn(Future.successful(List.empty))
+        when(aMock.fetchApiEvents(eqTo(serviceName), eqTo(true))(using *)).thenReturn(Future.successful(List.empty))
       }
     }
 

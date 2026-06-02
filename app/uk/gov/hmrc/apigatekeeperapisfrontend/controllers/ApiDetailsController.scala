@@ -24,8 +24,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.controllers.actions.GatekeeperRoleActions
 import uk.gov.hmrc.apigatekeeperapisfrontend.services.{ApmService, ThirdPartyApplicationService}
-import uk.gov.hmrc.apigatekeeperapisfrontend.views.html._
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apigatekeeperapisfrontend.views.html.*
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.gkauth.controllers.GatekeeperBaseController
 import uk.gov.hmrc.apiplatform.modules.gkauth.services.{LdapAuthorisationService, StrideAuthorisationService}
 
@@ -42,7 +42,8 @@ class ApiDetailsController @Inject() (
   )(implicit override val ec: ExecutionContext
   ) extends GatekeeperBaseController(strideAuthorisationService, mcc) with GatekeeperRoleActions {
 
-  def page(serviceName: ServiceName): Action[AnyContent] = loggedInOnly() { implicit request =>
+  def page(rawServiceName: String): Action[AnyContent] = loggedInOnly() { implicit request =>
+    val serviceName = ServiceName.apply(rawServiceName)
     apmService
       .fetchApi(serviceName)
       .flatMap {
@@ -53,7 +54,8 @@ class ApiDetailsController @Inject() (
       }
   }
 
-  def events(serviceName: ServiceName): Action[AnyContent] = loggedInOnly() { implicit request =>
+  def events(rawServiceName: String): Action[AnyContent] = loggedInOnly() { implicit request =>
+    val serviceName                             = ServiceName.apply(rawServiceName)
     def handleValidForm(form: EventFiltersForm) = {
       apmService
         .fetchApi(serviceName)

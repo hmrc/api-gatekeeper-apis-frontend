@@ -18,13 +18,15 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.services
 
 import scala.concurrent.Future
 
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.mockito.ArgumentMatchers.any as `*`
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 
 import uk.gov.hmrc.apigatekeeperapisfrontend.utils.ApiDataTestData
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaboratorsFixtures
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApiContext
 
-trait TpaServiceMockModule extends MockitoSugar with ArgumentMatchersSugar with ApplicationWithCollaboratorsFixtures {
+trait TpaServiceMockModule extends MockitoSugar with ApplicationWithCollaboratorsFixtures {
 
   trait BaseTpaServiceMock {
     def aMock: ThirdPartyApplicationService
@@ -32,7 +34,7 @@ trait TpaServiceMockModule extends MockitoSugar with ArgumentMatchersSugar with 
     object FetchAllApplications extends ApiDataTestData {
 
       def returnsData() = {
-        when(aMock.fetchAllApplications(*[ApiContext])(*)).thenReturn(Future.successful(List(standardApp, standardApp2)))
+        when(aMock.fetchAllApplications(*[ApiContext])(using *)).thenReturn(Future.successful(List(standardApp, standardApp2)))
       }
 
     }

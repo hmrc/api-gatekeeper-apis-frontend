@@ -36,16 +36,16 @@ class ApmServiceSpec extends AsyncHmrcSpec {
 
   "Fetch All Apis" should {
     "use sandbox if only sandbox returned" in new Setup {
-      ApmConnectorMock.FetchAllApis.returnsData(Environment.SANDBOX)
-      ApmConnectorMock.FetchAllApis.returnsNoData(Environment.PRODUCTION)
+      ApmConnectorMock.FetchAllApis.returnsData(Environment.Sandbox)
+      ApmConnectorMock.FetchAllApis.returnsNoData(Environment.Production)
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 1
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
     }
 
     "use production if only production returned" in new Setup {
-      ApmConnectorMock.FetchAllApis.returnsNoData(Environment.SANDBOX)
-      ApmConnectorMock.FetchAllApis.returnsData(Environment.PRODUCTION)
+      ApmConnectorMock.FetchAllApis.returnsNoData(Environment.Sandbox)
+      ApmConnectorMock.FetchAllApis.returnsData(Environment.Production)
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 1
       result.find(_.context == defaultContext).value shouldBe defaultApiDefinition
@@ -55,10 +55,10 @@ class ApmServiceSpec extends AsyncHmrcSpec {
       private val contextFromSandbox: ApiContext    = ApiContext("test/ciao")
       private val contextFromProduction: ApiContext = ApiContext("test/ola")
       ApmConnectorMock.FetchAllApis.returnsData(
-        Environment.SANDBOX,
+        Environment.Sandbox,
         List(defaultApiDefinition.copy(lastPublishedAt = Some(Instant.now)), defaultApiDefinition.copy(context = contextFromSandbox))
       )
-      ApmConnectorMock.FetchAllApis.returnsData(Environment.PRODUCTION, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
+      ApmConnectorMock.FetchAllApis.returnsData(Environment.Production, List(defaultApiDefinition, defaultApiDefinition.copy(context = contextFromProduction)))
 
       val result = await(service.fetchAllApis()).distinct
       result.size shouldBe 3
