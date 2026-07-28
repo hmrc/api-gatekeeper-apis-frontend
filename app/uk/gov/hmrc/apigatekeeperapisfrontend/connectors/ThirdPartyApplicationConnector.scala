@@ -19,6 +19,7 @@ package uk.gov.hmrc.apigatekeeperapisfrontend.connectors
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.http.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
@@ -30,10 +31,10 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApiContext
 class ThirdPartyApplicationConnector @Inject() (http: HttpClientV2, config: ThirdPartyApplicationConnector.Config)(implicit ec: ExecutionContext) {
 
   def fetchAllApplications(apiContext: ApiContext)(implicit hc: HeaderCarrier): Future[List[ApplicationWithCollaborators]] = {
-    http.get(url"${config.serviceBaseUrl}/query?context=$apiContext")
+    http.get(url"${config.serviceBaseUrl}/query?context=$apiContext&state=EXCLUDING_DELETED")
+      .setHeader((HeaderNames.ACCEPT, "application/stream+json"))
       .execute[List[ApplicationWithCollaborators]]
   }
-
 }
 
 object ThirdPartyApplicationConnector {

@@ -17,9 +17,10 @@
 package uk.gov.hmrc.apigatekeeperapisfrontend.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
+import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -48,12 +49,17 @@ class ThirdPartyApplicationConnectorISpec extends BaseConnectorIntegrationSpec w
   }
 
   "fetch api list" should {
-    val url = s"/query?context=${defaultContext}"
+    val url = s"/query"
     "fetch all applications" in new Setup {
-      stubFor(WireMock.get(urlEqualTo(url))
-        .willReturn(aResponse()
-          .withStatus(OK)
-          .withBody(Json.toJson(List(standardApp)).toString())))
+      stubFor(
+        WireMock.get(urlPathEqualTo(url))
+          .withQueryParam("context", equalTo(defaultContext.toString()))
+          .withQueryParam("state", equalTo("EXCLUDING_DELETED"))
+          .withHeader(HeaderNames.ACCEPT, equalTo("application/stream+json"))
+          .willReturn(aResponse()
+            .withStatus(OK)
+            .withBody(Json.toJson(List(standardApp)).toString()))
+      )
 
       val result = await(connector.fetchAllApplications(defaultContext))
 
