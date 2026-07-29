@@ -54,7 +54,7 @@ class ThirdPartyApplicationConnectorISpec extends BaseConnectorIntegrationSpec w
       stubFor(
         WireMock.get(urlPathEqualTo(url))
           .withQueryParam("context", equalTo(defaultContext.toString()))
-          .withQueryParam("state", equalTo("EXCLUDING_DELETED"))
+          .withQueryParam("status", equalTo("EXCLUDING_DELETED"))
           .withHeader(HeaderNames.ACCEPT, equalTo("application/stream+json"))
           .willReturn(aResponse()
             .withStatus(OK)
