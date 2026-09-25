@@ -63,7 +63,8 @@ class ApiListController @Inject() (
       ColumnDefinition("openEndpoints", defView => defView.openEndpoints.toString),
       ColumnDefinition("appEndpoints", defView => defView.appEndpoints.toString),
       ColumnDefinition("userEndpoints", defView => defView.userEndpoints.toString),
-      ColumnDefinition("totalEndpoints", defView => defView.totalEndpoints.toString)
+      ColumnDefinition("totalEndpoints", defView => defView.totalEndpoints.toString),
+      ColumnDefinition("mdtpRepoLink", defView => s"https://catalogue.tax.service.gov.uk/repositories/${defView.serviceName}")
     )
 
     apmService
