@@ -8,7 +8,7 @@ object AppDependencies {
   private val commonDomainVersion = "1.4.0"
   private val apiDomainVersion    = "1.8.0"
   private val appDomainVersion    = "1.6.0"
-  private val playfrontendVersion = "13.11.0"
+  private val playfrontendVersion = "13.16.0"
 
 
   val compile = Seq(
